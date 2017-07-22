@@ -9,6 +9,7 @@
       <AssemblerScript>{$lua}
       -- thanks to Filipe Pani for the basic code on the CTG group
 [ENABLE]
+if syntaxcheck then return end
 if not form then
   form = createForm()
   form.OnClose = function()
@@ -25,14 +26,20 @@ colors.blue  = RGB(0,0,255)
 colors.black = RGB(0,0,0)
 colors.white = RGB(255,255,255)
 
-function test()
+initialized = false
+function test(timer)
   if not form and t then t.destroy(); t=nil return end
   x,y = form.screenToClient(getMousePos())
-  if x &lt; 0 or x &gt; form.Width or y &lt; 0 or y &gt; form.Height then return end
+  if initialized and (x &lt; 0 or x &gt; form.Width or y &lt; 0 or y &gt; form.Height) then return end
+  initialized = true
 
   local canvas = form.Canvas
   canvas.Brush.Color = colors.blue
   canvas.clear()
+
+  canvas.Font.setSize(20)
+  canvas.Font.color = RGB(255,255,0)
+  canvas.textOut(10, 10, "Thanks Filipe Pani!")
 
   canvas.Brush.Color = colors.green
   canvas.pen.Color = colors.black
