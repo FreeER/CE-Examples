@@ -1,0 +1,7 @@
+local url = "http://my.webpage.com/version.txt" 
+local TRAINER_VERSION = 1 
+local http = getInternet() 
+local version = http.getURL(url) 
+if tonumber(version) > TRAINER_VERSION then 
+    showMessage("There is a new version!") 
+end

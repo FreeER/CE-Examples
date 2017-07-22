@@ -1,0 +1,14 @@
+http://forum.cheatengine.org/viewtopic.php?t=604469 - CE lua extension
+
+https://www.youtube.com/watch?v=cSQlM1nYX7w
+Quick video on duplicating scan tabs in CE (useful to start with changed/unchanged and then change to increasing/decreasing without losing your work if you were wrong)
+
+1. Do a scan
+2. Open the folder %temp%\Cheat Engine (perferably sort by Date modified)
+3. Copy the _contents_ of the newest folder
+3. Switch back to CE and create a new tab
+4. Do a scan (for anything, excluding long scans for something like 0/1 etc.)
+5. Back in the temp folder open the newly created folder and paste the contents (overwrite)
+6. Switch back to CE and change tabs and back again and you'll see the results
+
+That's it! Hope you find it useful :)

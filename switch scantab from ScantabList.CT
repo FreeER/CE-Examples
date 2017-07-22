@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"Create a new tab or this won't work"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+-- thanks mgr.inz.Player or showing me this http://forum.cheatengine.org/viewtopic.php?p=5728995
+[ENABLE]
+if not MainForm.ScantabList then
+  showMessage("You have to create a new tab before this will work")
+elseif MainForm.ScantabList.Count &lt; 2 then
+  showMessage("create a new tab to see this in action!")
+else
+  MainForm.ScantabList.SelectedTab = 0
+end
+[DISABLE]
+if not MainForm.ScantabList then
+  showMessage("You have to create a new tab before this will work")
+elseif MainForm.ScantabList.Count &lt; 2 then
+  showMessage("create a new tab to see this in action!")
+else
+  MainForm.ScantabList.SelectedTab = 1
+end
+
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>

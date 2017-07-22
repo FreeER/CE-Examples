@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="24">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"Auto Assemble script"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+[ENABLE]
+if syntaxcheck then return end
+unregisterSymbol(messageBoxACaller)
+messageBoxACaller=nil
+if messageBoxACaller==nil then
+  if autoAssemble([[
+    alloc(messageBoxACaller,128)
+    registersymbol(messageBoxACaller)
+messageBoxACaller:
+    sub rsp,28
+    mov r9,[rcx+18] //button
+    mov r8,[rcx+10] //caption
+    mov rdx,[rcx+8] //text
+    mov rcx,[rcx] //hwnd
+    call MessageBoxA
+    add rsp,28
+    ret
+  ]])
+  or autoAssemble([[
+    alloc(messageBoxACaller,128)
+    registersymbol(messageBoxACaller)
+messageBoxACaller:
+    mov ecx, [esp+4]
+    push [ecx+18] //button
+    push [ecx+10] //caption
+    push [ecx+8] //text
+    push [ecx] //hwnd
+    call MessageBoxA // stdcall so no cleanup
+    ret 4
+  ]]) then
+    if getCEVersion() &gt; 6.6 then
+      messageBoxACaller = getAddressSafe('messageBoxACaller')
+    else
+      local ps = errorOnLookupFailure(false)
+      messageBoxACaller = getAddress('messageBoxACaller')
+      errorOnLookupFailure(ps)
+    end
+  end
+end
+
+if messageBoxACaller==nil then
+  error('autoAssemble failed')
+end
+
+function MessageBox(hwnd, message, caption, button)
+  local space = #message+#caption+34
+  local mymem = getCEVersion() &gt; 6.6 and allocateMemory(space) or allocateSharedMemory("MBACallerParams:"..hwnd..message,space)
+
+  local captionaddress
+  writeString(mymem, message)
+  writeBytes(mymem+#message,0) --0 terminator
+  captionaddress=mymem+#message+1
+
+  writeString(captionaddress,caption)
+  writeBytes(captionaddress+#caption,0)
+
+  local params=captionaddress+#caption+1
+  writeQword(params,hwnd) --hwnd
+  writeQword(params+8,mymem) --text
+  writeQword(params+16,captionaddress) --caption
+  writeQword(params+24,button) --button (0=ok)
+
+  executeCode(messageBoxACaller,params)
+
+  deAlloc(mymem)
+end
+
+return MessageBox(0, 'BLA','XXX',0)
+[DISABLE]
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <Comments>Info about this table:
+</Comments>
+</CheatTable>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="24">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>4</ID>
+      <Description>"Step 4 - Health (float)"</Description>
+      <VariableType>Float</VariableType>
+      <Address>"Tutorial-i386.exe"+1FC600</Address>
+      <Offsets>
+        <Offset>494</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>5</ID>
+      <Description>"Step 4 - Ammo (double)"</Description>
+      <VariableType>Double</VariableType>
+      <Address>"Tutorial-i386.exe"+1FC600</Address>
+      <Offsets>
+        <Offset>498</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>6</ID>
+      <Description>"Create Hotkey"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+[ENABLE]
+-- get the address list object
+al = getAddressList()
+-- get the memory records for the two values
+health = al.getMemoryRecordByID(4)
+ammo = al.getMemoryRecordByID(5)
+
+-- create the hotkey
+HealthToAmmoHK = createHotkey(function()
+  -- get the value of health
+  value = tonumber(health.Value)
+  -- divide by 32 and add 1
+  value = value/32 + 1
+  -- store the value in ammo
+  ammo.Value = tostring(value)
+end,
+-- set the hotkey combo to 1, VK codes can be found in defines.lua
+-- which is in CE's install directory, probably %programfiles%\Cheat Engine 6.6
+-- or %programfiles(x86)%\cheat engine 6.6
+{VK_1})
+
+[DISABLE]
+-- destroy the hotkey so it doesn't work anymore
+HealthToAmmoHK.destroy()
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>

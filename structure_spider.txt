@@ -1,0 +1,11 @@
+-- FreeER: not sure where/when I copied this now lol
+As for Structure Spider, I keep meaning to get good enough with it to do a tutorial. I'll make that my focus this weekend. Someone asked about it recently on the CE forum and DarkByte replied:
+
+"if you have two objects, and want to compare them up to multiple levels deep, use the structure spider. There is also a string only option which can be useful as well."
+
+Using the CE help file to elaborate on that a bit:
+
+"The structure spider is like the structure dissect a useful tool in finding common values and differences between structures. The structure spider goes a bit further in that it automatically follows all possible pointer paths. When doing a scan, you can give two base pointers and tell the scanner that the values should be the same, or different.
+
+Another use of the structure spider is that it can focus on stringscans, which is useful for heavily scripted games. For example, if a script engine changes the value of a variable named "ammo" you could do a structure scan for the text "ammo". This will show all paths to that variablename.
+Do a rescan a few times to filter out the paths that are wrong, and you'll have a pretty stable pointerpath you can use in a code injection to see if the script engine is going to change ammo, or something else."

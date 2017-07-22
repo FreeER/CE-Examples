@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"Step 2"</Description>
+      <LastState Value="100" RealAddress="018A0050"/>
+      <VariableType>4 Bytes</VariableType>
+      <Address>["Tutorial-i386.exe"+1FD5D0]+480</Address>
+      <Hotkeys>
+        <Hotkey>
+          <Action>Increase Value</Action>
+          <Keys>
+            <Key>65</Key>
+          </Keys>
+          <Value>10</Value>
+          <ID>0</ID>
+        </Hotkey>
+        <Hotkey>
+          <Action>Set Value</Action>
+          <Keys/>
+          <Value>100</Value>
+          <ID>1</ID>
+        </Hotkey>
+      </Hotkeys>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"Setup OnPostHotkey to reset value when first hotkey is released"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+-- note could done in table lua script instead of AA script that can be toggled
+[ENABLE]
+if syntaxcheck then return end
+-- code to find the hotkeys
+local al = getAddressList()
+local mr = al.getMemoryRecordByID(0) --Description("Name of record with hotkeys")
+-- get hotkeys, based on position in list aka index not ID (at least fairly sure it's index)
+local hk = mr.Hotkey[0]
+
+-- set a function to run the second hotkey after the first has run
+-- and the first key has been released
+hk.onPostHotKey = function(sender)
+  if hotkeyResetTimer then return end
+  hotkeyResetTimer = createTimer()
+  hotkeyResetTimer.Interval = 100 -- check every 100 milliseconds
+  hotkeyResetTimer.OnTimer = function(timer)
+    print(tostring(hotkeyResetTimer) .. ' checking')
+    if not isKeyPressed(hk.keys[1]) then
+      sender.Owner.Hotkey[1].doHotkey()
+      print('destroying')
+      timer.destroy()
+      hotkeyResetTimer = nil
+    end
+  end
+end
+
+[DISABLE]
+if syntaxcheck then return end
+-- code to find the hotkeys
+local al = getAddressList()
+local mr = al.getMemoryRecordByID(0) --Description("Name of record with hotkeys")
+-- get hotkeys, based on position in list aka index not ID (at least fairly sure it's index)
+local hk = mr.Hotkey[0]
+hk.onPostHotKey = nil
+
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>2</ID>
+      <Description>"local and closures - create multiple timers"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+-- note could done in table lua script instead of AA script that can be toggled
+[ENABLE]
+if syntaxcheck then return end
+-- code to find the hotkeys
+local al = getAddressList()
+local mr = al.getMemoryRecordByID(0) --Description("Name of record with hotkeys")
+-- get hotkeys, based on position in list aka index not ID (at least fairly sure it's index)
+local hk = mr.Hotkey[0]
+
+-- set a function to run the second hotkey after the first has run
+-- and the first key has been released
+hk.onPostHotKey = function(sender)
+  local hotkeyResetTimer = createTimer()
+  hotkeyResetTimer.Interval = 100 -- check every 100 milliseconds
+  hotkeyResetTimer.OnTimer = function(timer)
+    print(tostring(hotkeyResetTimer) .. ' checking')
+    if not isKeyPressed(hk.keys[1]) then
+      sender.Owner.Hotkey[1].doHotkey()
+      print('destroying')
+      timer.destroy()
+      hotkeyResetTimer = nil
+    end
+  end
+end
+
+[DISABLE]
+if syntaxcheck then return end
+-- code to find the hotkeys
+local al = getAddressList()
+local mr = al.getMemoryRecordByID(0) --Description("Name of record with hotkeys")
+-- get hotkeys, based on position in list aka index not ID (at least fairly sure it's index)
+local hk = mr.Hotkey[0]
+hk.onPostHotKey = nil
+
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>

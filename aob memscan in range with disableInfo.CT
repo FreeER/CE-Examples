@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"Nop Step 2"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+[ENABLE]
+  local module = "Tutorial-i386.exe"
+  local startAddress = getAddress(module) -- get base address of exe
+  local stopAddress = startAddress + getModuleSize(module) -- get end of exe
+  --print(("base: %x\r\nend: %x"):format(startAddress, stopAddress))
+  local AOB = "29 d0 89 83"
+  -- not local so it can be used in DISABLE!
+  exampleUseWriteBytes = not true -- bool to switch between writeBytes demo and autoAssemble
+
+  if syntaxcheck then return end -- don't do the actual scan when creating/edting script
+  local ms = createMemScan()
+  --firstScan(scanoption, vartype, roundingtype, input1, input2 ,startAddress ,stopAddress ,protectionflags ,alignmenttype ,"alignmentparam" ,isHexadecimalInput ,isNotABinaryString, isunicodescan, iscasesensitive);
+  -- nil values shouldn't be used by CE for AOB scan so the values don't matter
+  -- the protection can be nil and default to anything but might as well show it
+  ms.firstScan(soExactValue, vtByteArray, nil, AOB, nil, startAddress, stopAddress,
+                             "+X-W-C", nil, nil, true, nil, nil, nil)
+  ms.waitTillDone()
+  local fl = createFoundList(ms)
+  fl.initialize()
+  if fl.Count ~= 1 then
+    -- free memory allocated by CE for scan/results
+    fl.destroy()
+    ms.destroy()
+    --showMessage("Not a unique AOB")
+    error("") -- prevent script from enabling
+  elseif exampleUseWriteBytes then
+    -- not local so it can be used in DISABLE!
+    exampleFoundAddress = fl.Address[0]
+    --print(("found %s"):format(exampleFoundAddress))
+    writeBytes(exampleFoundAddress, 0x90, 0x90) -- nop nop
+  else
+    -- not local so it can be used in DISABLE!
+    -- not sure why but the enable/disable sections don't like to work directly
+    -- so I've started using format and having it substitute them in lol
+    exampleScript = [[
+    [%s]
+    %s:
+      db 90 90
+    [%s]
+    %s:
+      sub eax,edx
+    ]]
+    exampleScript = exampleScript:format("ENABLE", fl.Address[0], "DISABLE", fl.Address[0])
+    local success, disableInfo = autoAssemble(exampleScript)
+    if not success then
+      -- free memory allocated by CE for scan/results
+      fl.destroy()
+      ms.destroy()
+      --showMessage("Failed to inject script for some reason...")
+      error("") -- prevent script from enabling
+    end
+    -- not local so it can be used in DISABLE!
+    exampleDisableScript = disableInfo
+  end
+  -- free memory allocated by CE for scan/results
+  fl.destroy()
+  ms.destroy()
+
+[DISABLE]
+  if exampleUseWriteBytes then
+    writeBytes(exampleFoundAddress, 0x29, 0xD0) -- sub eax,edx
+  else
+    autoAssemble(exampleScript, exampleDisableScript)
+  end
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
