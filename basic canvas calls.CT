@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"Auto Assemble script"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+      -- thanks to Filipe Pani for the basic code on the CTG group
+[ENABLE]
+if not form then
+  form = createForm()
+  form.OnClose = function()
+    form = nil
+    return caFree -- taken from trainer generated code
+  end
+end
+
+function RGB(r,g,b) return b&lt;&lt;16|g&lt;&lt;8|r end
+colors = {}
+colors.red   = RGB(255,0,0)
+colors.green = RGB(0,255,0)
+colors.blue  = RGB(0,0,255)
+colors.black = RGB(0,0,0)
+colors.white = RGB(255,255,255)
+
+function test()
+  if not form and t then t.destroy(); t=nil return end
+  x,y = form.screenToClient(getMousePos())
+  if x &lt; 0 or x &gt; form.Width or y &lt; 0 or y &gt; form.Height then return end
+
+  local canvas = form.Canvas
+  canvas.Brush.Color = colors.blue
+  canvas.clear()
+
+  canvas.Brush.Color = colors.green
+  canvas.pen.Color = colors.black
+  canvas.pen.Width = 2
+  canvas.Rect(x, y, 40, 40)
+
+  canvas.pen.Color = colors.red
+  canvas.pen.Width = 5
+  canvas.line(x, y, 100, 200)
+end
+
+if t then t.destroy(); t=nil end
+t=createTimer()
+t.Interval = 100
+t.onTimer = test
+
+[DISABLE]
+if form then form.destroy() form = nil end
+if t then t.destroy() t = nil end
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
