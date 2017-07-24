@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"Auto Assemble script"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+      -- thanks to Filipe Pani for the basic code on the CTG https://www.facebook.com/groups/CheatTheGame/
+[ENABLE]
+if syntaxcheck then return end
+if not form then
+  form = createForm()
+  form.OnClose = function()
+    form = nil
+    memrec.Active = false
+    return caFree -- taken from trainer generated code
+  end
+
+  form.DoubledBuffered = true
+  img = createImage(form)
+  img.Align = "alClient"
+  pic = createPicture()
+  pic.Bitmap.Width = form.Width
+  pic.Bitmap.Height = form.Height
+end
+
+function RGB(r,g,b) return b&lt;&lt;16|g&lt;&lt;8|r end
+colors = {}
+colors.red   = RGB(255,0,0)
+colors.green = RGB(0,255,0)
+colors.blue  = RGB(0,0,255)
+colors.black = RGB(0,0,0)
+colors.white = RGB(255,255,255)
+
+initialized = false
+function test(timer)
+  if not form and t then t.destroy(); t=nil return end
+  x,y = form.screenToClient(getMousePos())
+  if initialized and (x &lt; 0 or x &gt; form.Width or y &lt; 0 or y &gt; form.Height) then initialized = true return end
+
+  local canvas = pic.Bitmap.Canvas
+  canvas.Brush.Color = colors.blue
+  canvas.fillRect(0,0, form.Width, form.Height) -- clear
+
+  canvas.Font.setSize(20)
+  canvas.Font.color = RGB(255,255,0)
+  canvas.textOut(10, 10, "Thanks Filipe Pani!")
+
+  canvas.Brush.Color = colors.green
+  canvas.pen.Color = colors.black
+  canvas.pen.Width = 2
+  canvas.Rect(x, y, 40, 40)
+
+  canvas.pen.Color = colors.red
+  canvas.pen.Width = 5
+  canvas.line(x, y, 100, 200)
+
+  img.Picture = pic
+end
+
+if t then t.destroy(); t=nil end
+t=createTimer()
+t.Interval = 100
+t.onTimer = test
+
+[DISABLE]
+if form then form.destroy() form = nil end
+if t then t.destroy() t = nil end
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
