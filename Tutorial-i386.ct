@@ -24,7 +24,7 @@
         <CheatEntry>
           <ID>206</ID>
           <Description>""</Description>
-          <LastState Value="49 50 18 0 255 255 255 255 255 255" RealAddress="00400290"/>
+          <LastState Value="0 0 0 0 0 0 0 0 0 0" RealAddress="00400290"/>
           <VariableType>Array of byte</VariableType>
           <ByteLength>10</ByteLength>
           <Address>"Tutorial-i386.exe"+290</Address>
@@ -32,7 +32,7 @@
         <CheatEntry>
           <ID>207</ID>
           <Description>""</Description>
-          <LastState Value="31 32 12 00 FF FF FF FF FF FF" RealAddress="00400290"/>
+          <LastState Value="00 00 00 00 00 00 00 00 00 00" RealAddress="00400290"/>
           <ShowAsHex>1</ShowAsHex>
           <VariableType>Array of byte</VariableType>
           <ByteLength>10</ByteLength>
@@ -190,7 +190,7 @@ unregistersymbol(step7)
     </CheatEntry>
     <CheatEntry>
       <ID>17</ID>
-      <Description>"Step 8"</Description>
+      <Description>"Step 8 ( 525927 )"</Description>
       <LastState/>
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>[ENABLE]
@@ -204,6 +204,21 @@ step8:
   db EB 1C
 unregistersymbol(step8)
 </AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>211</ID>
+          <Description>"No description"</Description>
+          <LastState Value="1503" RealAddress="017D7EE8"/>
+          <VariableType>4 Bytes</VariableType>
+          <Address>"Tutorial-i386.exe"+1FD660</Address>
+          <Offsets>
+            <Offset>18</Offset>
+            <Offset>0</Offset>
+            <Offset>14</Offset>
+            <Offset>C</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
     </CheatEntry>
     <CheatEntry>
       <ID>40</ID>
@@ -499,7 +514,7 @@ createThread(step5test)
     <CheatEntry>
       <ID>32</ID>
       <Description>"100 byte code cave"</Description>
-      <LastState Value="1192497" RealAddress="00400290"/>
+      <LastState Value="0" RealAddress="00400290"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"Tutorial-i386.exe"+290</Address>
     </CheatEntry>
@@ -626,7 +641,7 @@ zxMem:
     <CheatEntry>
       <ID>155</ID>
       <Description>"100 byte code cave"</Description>
-      <LastState Value="1192497" RealAddress="00400290"/>
+      <LastState Value="0" RealAddress="00400290"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"Tutorial-i386.exe"+290</Address>
     </CheatEntry>
@@ -2307,6 +2322,7 @@ timer.Interval = 100 -- run 1/10 a second later
         <CheatEntry>
           <ID>201</ID>
           <Description>"No description"</Description>
+          <LastState Value="00000064" RealAddress="0175FBC0"/>
           <ShowAsHex>1</ShowAsHex>
           <VariableType>4 Bytes</VariableType>
           <Address>"Tutorial-i386.exe"+1FD5D0</Address>
@@ -3213,6 +3229,7 @@ $getAddress('[Tutorial-i386.exe+1FD5D0]')+0x400+math.pow(2,7):
         <CheatEntry>
           <ID>204</ID>
           <Description>"Step 2"</Description>
+          <LastState Value="100" RealAddress="0175FBC0"/>
           <ShowAsSigned>1</ShowAsSigned>
           <VariableType>4 Bytes</VariableType>
           <Address>[Tutorial-i386.exe+1FD5D0]+480</Address>
@@ -3689,7 +3706,7 @@ return "db " .. ("00 "):rep(20)
         <CheatEntry>
           <ID>169</ID>
           <Description>"String (prefixed) length"</Description>
-          <LastState Value="1192497" RealAddress="00400290"/>
+          <LastState Value="0" RealAddress="00400290"/>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>4 Bytes</VariableType>
           <Address>"Tutorial-i386.exe"+290</Address>
@@ -4272,15 +4289,15 @@ print("\r\n\r\n")
     </SymbolEntry>
   </UserdefinedSymbols>
   <Structures StructVersion="2">
-    <Structure Name="player" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="0" AutoCreateStructsize="4096">
+    <Structure Name="player2" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="1" RLECompression="0" AutoCreateStructsize="4096">
       <Elements>
         <Element Offset="0" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
         <Element Offset="4" Vartype="Float" Bytesize="4" Description="health" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="8" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="8" Vartype="4 Bytes" Bytesize="4" Description="idk" DisplayMethod="Unsigned Integer"/>
         <Element Offset="12" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
         <Element Offset="16" Vartype="4 Bytes" Bytesize="4" Description="team" DisplayMethod="Unsigned Integer"/>
         <Element Offset="20" Vartype="Byte" Bytesize="1" Description="NameLength" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="21" Vartype="String" Bytesize="5" Description="Name" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="21" Vartype="Unicode String" Bytesize="5" Description="Name" DisplayMethod="Unsigned Integer"/>
         <Element Offset="26" Vartype="Byte" Bytesize="1" DisplayMethod="Unsigned Integer"/>
         <Element Offset="27" Vartype="Byte" Bytesize="1" DisplayMethod="Unsigned Integer"/>
         <Element Offset="28" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
@@ -4299,6 +4316,19 @@ print("\r\n\r\n")
         <Element Offset="80" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
         <Element Offset="84" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
         <Element Offset="88" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+      </Elements>
+    </Structure>
+    <Structure Name="player" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+      <Elements>
+        <Element Offset="0" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="4" Vartype="Float" Bytesize="4" Description="health" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="8" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="16" Vartype="4 Bytes" Bytesize="4" Description="team" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="20" Vartype="Byte" Bytesize="1" Description="NameLength" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="21" Vartype="String" Bytesize="5" Description="Name" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="26" Vartype="Byte" Bytesize="1" RLECount="2" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="28" Vartype="4 Bytes" Bytesize="4" RLECount="14" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="84" Vartype="Pointer" Bytesize="4" RLECount="2" PointerSize="4" DisplayMethod="Unsigned Integer"/>
       </Elements>
     </Structure>
   </Structures>
