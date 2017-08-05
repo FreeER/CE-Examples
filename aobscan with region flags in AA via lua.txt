@@ -1,0 +1,33 @@
+http://forum.cheatengine.org/viewtopic.php?p=5729784#5729784
+
+"Is it possible to use the [executable, writable, copy] flags also in the table AA script?"
+
+ParkourPenguin wrote:
+Instead of: 
+Code:
+aobscan(STAMMS,8B 40 34 3D 01 00 00 00 75) 
+...
+
+You can write: 
+Code:
+{$lua} 
+local res = assert(AOBScan('8B 40 34 3D 01 00 00 00 75','+X'), 'no results found') 
+local address = res[0] 
+res.destroy() 
+return string.format('define(STAMMS,%s)', address) 
+{$asm} 
+...
+
+Or, for more control and a slightly faster scan: 
+Code:
+{$lua} 
+local memscan = createMemScan(nil) 
+memscan.OnlyOneResult = true 
+memscan.firstScan(soExactValue, vtByteArray, rtRounded, '8B 40 34 3D 01 00 00 00 75', '', 0, 0x7fffffffffffffff, '+X', fsmNotAligned, '', true, true, false, false) 
+memscan.waitTillDone() 
+local addr = memscan.Result 
+memscan.destroy() 
+assert(addr, 'no results found') 
+return string.format('define(STAMMS,%08X)', addr) 
+{$asm} 
+...
