@@ -1,0 +1,4 @@
+DB - Today at 5:06 AM (discord)
+memrec.Options='[XXXX]'  where XXXX can be a combination of moHideChildren, moActivateChildrenAsWell, moDeactivateChildrenAsWell, moRecursiveSetValue, moAllowManualCollapseAndExpand, moManualExpandCollapse seperated by a comma
+
+collapse method only works when manual expand/collapse is set in the options

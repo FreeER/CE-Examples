@@ -208,7 +208,6 @@ unregistersymbol(step8)
         <CheatEntry>
           <ID>211</ID>
           <Description>"No description"</Description>
-          <LastState Value="1503" RealAddress="017D7EE8"/>
           <VariableType>4 Bytes</VariableType>
           <Address>"Tutorial-i386.exe"+1FD660</Address>
           <Offsets>
@@ -2322,7 +2321,6 @@ timer.Interval = 100 -- run 1/10 a second later
         <CheatEntry>
           <ID>201</ID>
           <Description>"No description"</Description>
-          <LastState Value="00000064" RealAddress="0175FBC0"/>
           <ShowAsHex>1</ShowAsHex>
           <VariableType>4 Bytes</VariableType>
           <Address>"Tutorial-i386.exe"+1FD5D0</Address>
@@ -3229,7 +3227,6 @@ $getAddress('[Tutorial-i386.exe+1FD5D0]')+0x400+math.pow(2,7):
         <CheatEntry>
           <ID>204</ID>
           <Description>"Step 2"</Description>
-          <LastState Value="100" RealAddress="0175FBC0"/>
           <ShowAsSigned>1</ShowAsSigned>
           <VariableType>4 Bytes</VariableType>
           <Address>[Tutorial-i386.exe+1FD5D0]+480</Address>
@@ -4142,6 +4139,13 @@ print("\r\n\r\n")
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
+    <CheatEntry>
+      <ID>212</ID>
+      <Description>"No description"</Description>
+      <LastState Value="100" RealAddress="017F6B34"/>
+      <VariableType>Float</VariableType>
+      <Address>17F6B34</Address>
+    </CheatEntry>
   </CheatEntries>
   <CheatCodes>
     <CodeEntry>
@@ -4291,7 +4295,7 @@ print("\r\n\r\n")
   <Structures StructVersion="2">
     <Structure Name="player2" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="1" RLECompression="0" AutoCreateStructsize="4096">
       <Elements>
-        <Element Offset="0" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="0" Vartype="Pointer" Bytesize="4" Description="ptrTest" DisplayMethod="Unsigned Integer"/>
         <Element Offset="4" Vartype="Float" Bytesize="4" Description="health" DisplayMethod="Unsigned Integer"/>
         <Element Offset="8" Vartype="4 Bytes" Bytesize="4" Description="idk" DisplayMethod="Unsigned Integer"/>
         <Element Offset="12" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
