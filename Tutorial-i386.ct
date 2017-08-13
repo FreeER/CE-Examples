@@ -3310,6 +3310,7 @@ unregisterSymbol(data)
         <CheatEntry>
           <ID>213</ID>
           <Description>"qword 1"</Description>
+          <LastState Value="4632937379169042432" RealAddress="016F003C"/>
           <ShowAsSigned>1</ShowAsSigned>
           <VariableType>8 Bytes</VariableType>
           <Address>data</Address>
@@ -3317,6 +3318,7 @@ unregisterSymbol(data)
         <CheatEntry>
           <ID>214</ID>
           <Description>"qword 2"</Description>
+          <LastState Value="4632655904192331776" RealAddress="016F0044"/>
           <ShowAsSigned>1</ShowAsSigned>
           <VariableType>8 Bytes</VariableType>
           <Address>data+8</Address>
@@ -3324,9 +3326,157 @@ unregisterSymbol(data)
         <CheatEntry>
           <ID>215</ID>
           <Description>"res"</Description>
+          <LastState Value="7310011937279273044" RealAddress="016F004C"/>
           <ShowAsSigned>1</ShowAsSigned>
           <VariableType>8 Bytes</VariableType>
           <Address>data+10</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>217</ID>
+      <Description>"compare doubles using fpu"</Description>
+      <Options moHideChildren="1"/>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>// fpu double compare
+// http://forum.cheatengine.org/viewtopic.php?p=5730174#5730174
+
+globalalloc(test,1024)
+[ENABLE]
+label(data)
+label(strings)
+label(equal)
+label(greater)
+label(less)
+label(docall)
+
+test:
+  // load second value so that first is in ST(0)
+  fld qword ptr [data+8]
+  // load first into ST(0)
+  fld qword ptr [data]
+  // check
+  fucomip st(1)
+  cmovz ecx, [strings+0] //equal
+  je docall
+  cmova ecx, [strings+4] // positive, greater
+  cmovna ecx, [strings+8] //negative, less
+docall:
+  push 0 // uType OK
+  push 0 // caption
+  push ecx // text
+  push 0 // hwnd
+  call MessageBoxA
+  ret
+data:
+  dq (double)-55
+  dq (double)-353
+equal:
+  db 'They are eq',0
+greater:
+  db 'First is gtr',0
+less:
+  db 'First is les',0
+strings:
+  dd equal
+  dd greater
+  dd less
+
+registerSymbol(data)
+
+createThread(test)
+[DISABLE]
+unregisterSymbol(data)
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>218</ID>
+          <Description>"No description"</Description>
+          <LastState Value="55" RealAddress="016F003C"/>
+          <VariableType>Double</VariableType>
+          <Address>data</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>220</ID>
+          <Description>"No description"</Description>
+          <LastState Value="53" RealAddress="016F0044"/>
+          <VariableType>Double</VariableType>
+          <Address>data+8</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>221</ID>
+      <Description>"compare doubles using sse"</Description>
+      <Options moHideChildren="1"/>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>// fpu double compare
+// https://docs.oracle.com/cd/E18752_01/html/817-5477/epmpv.html
+// http://forum.cheatengine.org/viewtopic.php?p=5730174#5730174
+
+globalalloc(test,1024)
+[ENABLE]
+label(data)
+label(strings)
+label(equal)
+label(greater)
+label(less)
+label(docall)
+
+test:
+  // load first value
+  movsd xmm0, [data]
+  // load second value
+  movsd xmm1, [data+8]
+  // check
+  ucomisd xmm0, xmm1
+  cmovz ecx, [strings+0] //equal
+  je docall
+  cmova ecx, [strings+4] // positive, greater
+  cmovna ecx, [strings+8] //negative, less
+docall:
+  push 0 // uType OK
+  push 0 // caption
+  push ecx // text
+  push 0 // hwnd
+  call MessageBoxA
+  ret
+data:
+  dq (double)55
+  dq (double)53
+equal:
+  db 'They are eq',0
+greater:
+  db 'First is gtr',0
+less:
+  db 'First is les',0
+strings:
+  dd equal
+  dd greater
+  dd less
+
+registerSymbol(data)
+
+createThread(test)
+[DISABLE]
+unregisterSymbol(data)
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>222</ID>
+          <Description>"No description"</Description>
+          <LastState Value="55" RealAddress="016F003C"/>
+          <VariableType>Double</VariableType>
+          <Address>data</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>223</ID>
+          <Description>"No description"</Description>
+          <LastState Value="53" RealAddress="016F0044"/>
+          <VariableType>Double</VariableType>
+          <Address>data+8</Address>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
@@ -4383,7 +4533,7 @@ print("\r\n\r\n")
     </SymbolEntry>
     <SymbolEntry>
       <Name>test</Name>
-      <Address>000E0000</Address>
+      <Address>016F0000</Address>
     </SymbolEntry>
   </UserdefinedSymbols>
   <Structures StructVersion="2">
