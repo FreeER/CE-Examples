@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <Forms>
+    <CETrainer Class="TCEForm" Encoding="Ascii85">RghZ;!Y}j.r%7!riofD6bO+(yQ7lw2.CHpL4Qg7#2rj=^h%0poM$]KE%AGKWlbeMHAXc,66Fi/)/]nW,m]rJD^6y{NauUp=DoUgeprWej4LTc?V?V@A?vKHw;EH_X]B6!YAEf8zmVlQg(J^9uOq{Ejjf4ze4iY(9S#=FWO-)Kh0bj?q1{*cJ%i_g_g9Jhw6R8Wk(zQ{BdjO#_PS1#y4%@[Yq.937cd;g?j4Xe9H3UnwZL(MC!RP8de..W75uN</CETrainer>
+  </Forms>
+  <CheatEntries>
+    <CheatEntry>
+      <ID>4</ID>
+      <Description>"Inject Step 2"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ Game   : Tutorial-i386.exe
+  Version: 
+  Date   : 2017-08-09
+  Author : HJP19
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+{$lua}
+-- open the form
+CETrainer.show()
+{$asm}
+aobscanmodule(INJECT,Tutorial-i386.exe,29 D0 89 83 80 04 00 00) // should be unique
+alloc(newmem,$1000)
+
+label(code)
+label(return)
+
+newmem:
+
+code:
+  mov edx, [somename]
+  sub eax,edx
+  mov [ebx+00000480],eax
+  jmp return
+
+INJECT:
+  jmp newmem
+  nop
+  nop
+  nop
+return:
+registersymbol(INJECT)
+
+[DISABLE]
+
+INJECT:
+  db 29 D0 89 83 80 04 00 00
+
+unregistersymbol(INJECT)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "Tutorial-i386.exe"+23B7E
+
+"Tutorial-i386.exe"+23B59: 8D 4D F4              -  lea ecx,[ebp-0C]
+"Tutorial-i386.exe"+23B5C: E8 5F 99 FE FF        -  call Tutorial-i386.exe+D4C0
+"Tutorial-i386.exe"+23B61: E8 6A B4 FE FF        -  call Tutorial-i386.exe+EFD0
+"Tutorial-i386.exe"+23B66: 50                    -  push eax
+"Tutorial-i386.exe"+23B67: 85 C0                 -  test eax,eax
+"Tutorial-i386.exe"+23B69: 75 65                 -  jne Tutorial-i386.exe+23BD0
+"Tutorial-i386.exe"+23B6B: B8 05 00 00 00        -  mov eax,00000005
+"Tutorial-i386.exe"+23B70: E8 8B AB FE FF        -  call Tutorial-i386.exe+E700
+"Tutorial-i386.exe"+23B75: 8D 50 01              -  lea edx,[eax+01]
+"Tutorial-i386.exe"+23B78: 8B 83 80 04 00 00     -  mov eax,[ebx+00000480]
+// ---------- INJECTING HERE ----------
+"Tutorial-i386.exe"+23B7E: 29 D0                 -  sub eax,edx
+"Tutorial-i386.exe"+23B80: 89 83 80 04 00 00     -  mov [ebx+00000480],eax
+// ---------- DONE INJECTING  ----------
+"Tutorial-i386.exe"+23B86: 8D 55 D4              -  lea edx,[ebp-2C]
+"Tutorial-i386.exe"+23B89: E8 12 62 01 00        -  call Tutorial-i386.exe+39DA0
+"Tutorial-i386.exe"+23B8E: 8B 55 D4              -  mov edx,[ebp-2C]
+"Tutorial-i386.exe"+23B91: 8B 83 6C 04 00 00     -  mov eax,[ebx+0000046C]
+"Tutorial-i386.exe"+23B97: E8 24 00 07 00        -  call Tutorial-i386.exe+93BC0
+"Tutorial-i386.exe"+23B9C: 83 BB 80 04 00 00 00  -  cmp dword ptr [ebx+00000480],00
+"Tutorial-i386.exe"+23BA3: 7D 2B                 -  jnl Tutorial-i386.exe+23BD0
+"Tutorial-i386.exe"+23BA5: A1 14 02 55 00        -  mov eax,[Tutorial-i386.exe+150214]
+"Tutorial-i386.exe"+23BAA: E8 41 56 0F 00        -  call Tutorial-i386.exe+1191F0
+"Tutorial-i386.exe"+23BAF: B8 64 00 00 00        -  mov eax,00000064
+}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>5</ID>
+          <Description>"No description"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>somename</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>7</ID>
+      <Description>"Step 2 Value"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>"Tutorial-i386.exe"+1FD5D0</Address>
+      <Offsets>
+        <Offset>480</Offset>
+      </Offsets>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <LuaScript>local sharedMemory = 0
+function onOpenProcess(id)
+  reinitializeSymbolhandler()
+  sharedMemory = allocateSharedMemory('somename', 4)
+  registerSymbol('somename', sharedMemory, true)
+end
+
+function CEButton1Click(sender)
+  if sharedMemory then
+    writeInteger(sharedMemory, tonumber(CETrainer.CEEdit1.Text))
+  end
+end
+
+</LuaScript>
+</CheatTable>

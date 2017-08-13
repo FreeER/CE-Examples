@@ -3240,6 +3240,103 @@ $getAddress('[Tutorial-i386.exe+1FD5D0]')+0x400+math.pow(2,7):
       <GroupHeader>1</GroupHeader>
     </CheatEntry>
     <CheatEntry>
+      <ID>212</ID>
+      <Description>"x86 compare signed qwords"</Description>
+      <Options moHideChildren="1"/>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>// x86 signed qword compare
+// https://stackoverflow.com/questions/12944690/working-with-qwords
+// http://forum.cheatengine.org/viewtopic.php?p=5730174#5730174
+
+globalalloc(test,1024)
+[ENABLE]
+label(data)
+label(strings)
+label(equal)
+label(greater)
+label(less)
+label(docall)
+
+test:
+  // load first vlaue
+  mov eax, [data+4]
+  mov edx, [data]
+  // add second
+  sub edx, [data+8]
+  sbb eax, [data+C]
+  // save result
+  mov [data+10], edx
+  mov [data+14], eax
+  // check
+  mov ecx, edx
+  or ecx, eax
+  cmovz ecx, [strings+0] //equal
+  je docall
+  // if positive A greater
+  // positive if edx &amp;lt; 0x80000000
+  cmp eax,80000000
+  cmovb ecx, [strings+4] // positive, greater
+  cmovnb ecx, [strings+8] //negative, less
+docall:
+  push 0 // uType OK
+  push 0 // caption
+  push ecx // text
+  push 0 // hwnd
+  call MessageBoxA
+  ret
+data:
+  dq #55
+  dq #635
+  dq 1
+equal:
+  db 'They are eq',0
+greater:
+  db 'First is gtr, pos',0
+less:
+  db 'First is les, neg',0
+strings:
+  dd equal
+  dd greater
+  dd less
+
+registerSymbol(data)
+
+createThread(test)
+[DISABLE]
+unregisterSymbol(data)
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>213</ID>
+          <Description>"qword 1"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>8 Bytes</VariableType>
+          <Address>data</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>214</ID>
+          <Description>"qword 2"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>8 Bytes</VariableType>
+          <Address>data+8</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>215</ID>
+          <Description>"res"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>8 Bytes</VariableType>
+          <Address>data+10</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>216</ID>
+      <Description>"---------------------------------- Technical Examples ----------------------------------"</Description>
+      <LastState Value="" RealAddress="00000000"/>
+      <GroupHeader>1</GroupHeader>
+    </CheatEntry>
+    <CheatEntry>
       <ID>178</ID>
       <Description>"DE AD C0 DE 15 DE AD"</Description>
       <Options moHideChildren="1"/>
@@ -4139,13 +4236,6 @@ print("\r\n\r\n")
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
-    <CheatEntry>
-      <ID>212</ID>
-      <Description>"No description"</Description>
-      <LastState Value="100" RealAddress="017F6B34"/>
-      <VariableType>Float</VariableType>
-      <Address>17F6B34</Address>
-    </CheatEntry>
   </CheatEntries>
   <CheatCodes>
     <CodeEntry>
@@ -4291,11 +4381,15 @@ print("\r\n\r\n")
       <Name>step2HitMeNewCode</Name>
       <Address>001A00D0</Address>
     </SymbolEntry>
+    <SymbolEntry>
+      <Name>test</Name>
+      <Address>000E0000</Address>
+    </SymbolEntry>
   </UserdefinedSymbols>
   <Structures StructVersion="2">
     <Structure Name="player2" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="1" RLECompression="0" AutoCreateStructsize="4096">
       <Elements>
-        <Element Offset="0" Vartype="Pointer" Bytesize="4" Description="ptrTest" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="0" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
         <Element Offset="4" Vartype="Float" Bytesize="4" Description="health" DisplayMethod="Unsigned Integer"/>
         <Element Offset="8" Vartype="4 Bytes" Bytesize="4" Description="idk" DisplayMethod="Unsigned Integer"/>
         <Element Offset="12" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
