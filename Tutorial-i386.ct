@@ -2321,6 +2321,7 @@ timer.Interval = 100 -- run 1/10 a second later
         <CheatEntry>
           <ID>201</ID>
           <Description>"No description"</Description>
+          <LastState Value="0000003B" RealAddress="0178E308"/>
           <ShowAsHex>1</ShowAsHex>
           <VariableType>4 Bytes</VariableType>
           <Address>"Tutorial-i386.exe"+1FD5D0</Address>
@@ -2463,8 +2464,8 @@ timer.interval = 100 -- 1/10 of a second
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>loadlibrary(luaclient-i386.dll)
 luacall(openLuaServer('CELUASERVER'))
-
-// http://forum.cheatengine.org/viewtopic.php?t=604761 faster call with CELUA_ExecuteFunctionByReference
+// http://forum.cheatengine.org/viewtopic.php?p=5726944#5726944  basic x64 call example
+// http://forum.cheatengine.org/viewtopic.php?t=604761           faster call with CELUA_ExecuteFunctionByReference
 
 CELUA_ServerName:
   db 'CELUASERVER',0
@@ -2476,7 +2477,7 @@ db 'mr = al.getMemoryRecordByID(51) '
 db 'mr.active = false', 0
 
 [ENABLE]
-aobscan(step2HitMeCode, 89 83 ?? ?? ?? ?? 8d 55 ?? e8 02 62)
+aobscan(step2HitMeCode, 89 83 ?? ?? ?? ?? 8d 55 ?? e8 ?2 62)
 registerSymbol(step2HitMeCode)
 globalalloc(step2HitMeNewCode, 0x1B) // globalalloc mem is not dealloced
 
@@ -2498,6 +2499,83 @@ step2HitMeNewCode:
 step2HitMeCode:
   mov [ebx+00000480], eax
 unregisterSymbol(step2HitMeCode)
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>224</ID>
+      <Description>"Run lua function with one agument/parameter from AA (step 2)"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>// http://forum.cheatengine.org/viewtopic.php?p=5726944#5726944  basic x64 call example
+// http://forum.cheatengine.org/viewtopic.php?t=604761           faster call with CELUA_ExecuteFunctionByReference
+
+{$lua}
+-- could be in global table
+function testMe(id)
+  print('testMe was called with id ' .. tostring(id) .. '!')
+  --[[
+  -- registers are not updated unfortunatetly, even with get/set context...
+  -- I suppose a breakpoint could be set on the return address and set them there,
+  -- a registered symbol would make it easy to find
+  debug_getContext() -- update registers for lua
+  print(('%x'):format(EBX+0x480))
+  print(EAX)
+  debug_setContext() -- update registers for asm
+  --]]
+
+  -- disable the mem rec, after a delay for the script to finish
+  -- or you'll probably crash when you return from the lua function
+  -- to the asm code that was deallocated.... lol
+  local t = createTimer()
+  t.Interval = 300 -- milliseconds 3/10 of a second
+  t.OnTimer = function(t)
+    local mr = getAddressList().getMemoryRecordByID(id)
+    if mr then mr.Active = false end
+    t.destroy()
+  end
+end
+{$asm}
+
+loadlibrary(luaclient-i386.dll)
+luacall(openLuaServer('CELUASERVER'))
+
+
+CELUA_ServerName:
+  db 'CELUASERVER',0
+
+globalalloc(luaFunctionCode, 200)
+luaFunctionCode:
+db 'testMe(parameter)',0 // parameter set by CELUA_ExecuteFunction
+
+[ENABLE]
+aobscan(step2HitMeCode, 89 83 ?? ?? ?? ?? 8d 55 ?? e8 ?2 62)
+alloc(newmem, $1000) // globalalloc mem is not dealloced
+
+label(return)
+
+newmem:
+  mov [ebx+00000480], eax // set step 2 value
+  push eax // save eax
+  // push this scripts id (could be pointer to arguments in memory somewhere)
+{$lua}
+  return memrec and ('push #' .. memrec.id) or ('push #224') -- pre CE6.7 doesn't have memrec
+{$asm}
+  push luaFunctionCode // lua code to run
+  call CELUA_ExecuteFunction // run it, make sure it doesn't dealloc mem that's running lol
+  pop eax
+  jmp return
+
+step2HitMeCode:
+  jmp newmem
+  nop
+return:
+registerSymbol(step2HitMeCode)
+
+[DISABLE]
+step2HitMeCode:
+  mov [ebx+00000480], eax
+unregisterSymbol(step2HitMeCode)
+dealloc(newmem)
 </AssemblerScript>
     </CheatEntry>
     <CheatEntry>
@@ -3227,6 +3305,7 @@ $getAddress('[Tutorial-i386.exe+1FD5D0]')+0x400+math.pow(2,7):
         <CheatEntry>
           <ID>204</ID>
           <Description>"Step 2"</Description>
+          <LastState Value="59" RealAddress="0178E308"/>
           <ShowAsSigned>1</ShowAsSigned>
           <VariableType>4 Bytes</VariableType>
           <Address>[Tutorial-i386.exe+1FD5D0]+480</Address>
@@ -3310,7 +3389,6 @@ unregisterSymbol(data)
         <CheatEntry>
           <ID>213</ID>
           <Description>"qword 1"</Description>
-          <LastState Value="4632937379169042432" RealAddress="016F003C"/>
           <ShowAsSigned>1</ShowAsSigned>
           <VariableType>8 Bytes</VariableType>
           <Address>data</Address>
@@ -3318,7 +3396,6 @@ unregisterSymbol(data)
         <CheatEntry>
           <ID>214</ID>
           <Description>"qword 2"</Description>
-          <LastState Value="4632655904192331776" RealAddress="016F0044"/>
           <ShowAsSigned>1</ShowAsSigned>
           <VariableType>8 Bytes</VariableType>
           <Address>data+8</Address>
@@ -3326,7 +3403,6 @@ unregisterSymbol(data)
         <CheatEntry>
           <ID>215</ID>
           <Description>"res"</Description>
-          <LastState Value="7310011937279273044" RealAddress="016F004C"/>
           <ShowAsSigned>1</ShowAsSigned>
           <VariableType>8 Bytes</VariableType>
           <Address>data+10</Address>
@@ -3393,14 +3469,12 @@ unregisterSymbol(data)
         <CheatEntry>
           <ID>218</ID>
           <Description>"No description"</Description>
-          <LastState Value="55" RealAddress="016F003C"/>
           <VariableType>Double</VariableType>
           <Address>data</Address>
         </CheatEntry>
         <CheatEntry>
           <ID>220</ID>
           <Description>"No description"</Description>
-          <LastState Value="53" RealAddress="016F0044"/>
           <VariableType>Double</VariableType>
           <Address>data+8</Address>
         </CheatEntry>
@@ -3467,14 +3541,12 @@ unregisterSymbol(data)
         <CheatEntry>
           <ID>222</ID>
           <Description>"No description"</Description>
-          <LastState Value="55" RealAddress="016F003C"/>
           <VariableType>Double</VariableType>
           <Address>data</Address>
         </CheatEntry>
         <CheatEntry>
           <ID>223</ID>
           <Description>"No description"</Description>
-          <LastState Value="53" RealAddress="016F0044"/>
           <VariableType>Double</VariableType>
           <Address>data+8</Address>
         </CheatEntry>
@@ -4525,11 +4597,11 @@ print("\r\n\r\n")
     </SymbolEntry>
     <SymbolEntry>
       <Name>luaFunctionCode</Name>
-      <Address>001A0000</Address>
+      <Address>048D0000</Address>
     </SymbolEntry>
     <SymbolEntry>
       <Name>step2HitMeNewCode</Name>
-      <Address>001A00D0</Address>
+      <Address>048D00D0</Address>
     </SymbolEntry>
     <SymbolEntry>
       <Name>test</Name>
@@ -4539,47 +4611,49 @@ print("\r\n\r\n")
   <Structures StructVersion="2">
     <Structure Name="player2" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="1" RLECompression="0" AutoCreateStructsize="4096">
       <Elements>
-        <Element Offset="0" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="4" Vartype="Float" Bytesize="4" Description="health" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="8" Vartype="4 Bytes" Bytesize="4" Description="idk" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="12" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
-        <Element Offset="16" Vartype="4 Bytes" Bytesize="4" Description="team" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="20" Vartype="Byte" Bytesize="1" Description="NameLength" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="21" Vartype="Unicode String" Bytesize="5" Description="Name" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="26" Vartype="Byte" Bytesize="1" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="27" Vartype="Byte" Bytesize="1" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="28" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="32" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="36" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="40" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="44" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="48" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="52" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="56" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="60" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="64" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="68" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="72" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="76" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="80" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="84" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="88" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="0" Vartype="Pointer" Bytesize="4" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="4" Vartype="Float" Bytesize="4" Customtype="" Description="health" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="8" Vartype="4 Bytes" Bytesize="4" Customtype="" Description="idk" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="12" Vartype="4 Bytes" Bytesize="4" Customtype="" DisplayMethod="Hexadecimal"/>
+        <Element Offset="16" Vartype="4 Bytes" Bytesize="4" Customtype="" Description="team" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="20" Vartype="Byte" Bytesize="1" Customtype="" Description="NameLength" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="21" Vartype="Unicode String" Bytesize="5" Customtype="" Description="Name" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="26" Vartype="Byte" Bytesize="1" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="27" Vartype="Byte" Bytesize="1" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="28" Vartype="4 Bytes" Bytesize="4" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="32" Vartype="4 Bytes" Bytesize="4" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="36" Vartype="4 Bytes" Bytesize="4" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="40" Vartype="4 Bytes" Bytesize="4" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="44" Vartype="4 Bytes" Bytesize="4" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="48" Vartype="4 Bytes" Bytesize="4" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="52" Vartype="4 Bytes" Bytesize="4" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="56" Vartype="4 Bytes" Bytesize="4" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="60" Vartype="4 Bytes" Bytesize="4" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="64" Vartype="4 Bytes" Bytesize="4" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="68" Vartype="4 Bytes" Bytesize="4" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="72" Vartype="4 Bytes" Bytesize="4" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="76" Vartype="4 Bytes" Bytesize="4" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="80" Vartype="4 Bytes" Bytesize="4" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="84" Vartype="Pointer" Bytesize="4" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="88" Vartype="Pointer" Bytesize="4" Customtype="" DisplayMethod="Unsigned Integer"/>
       </Elements>
     </Structure>
     <Structure Name="player" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
       <Elements>
-        <Element Offset="0" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="4" Vartype="Float" Bytesize="4" Description="health" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="8" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="16" Vartype="4 Bytes" Bytesize="4" Description="team" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="20" Vartype="Byte" Bytesize="1" Description="NameLength" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="21" Vartype="String" Bytesize="5" Description="Name" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="26" Vartype="Byte" Bytesize="1" RLECount="2" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="28" Vartype="4 Bytes" Bytesize="4" RLECount="14" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="84" Vartype="Pointer" Bytesize="4" RLECount="2" PointerSize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="0" Vartype="Pointer" Bytesize="4" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="4" Vartype="Float" Bytesize="4" Customtype="" Description="health" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="8" Vartype="4 Bytes" Bytesize="4" RLECount="2" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="16" Vartype="4 Bytes" Bytesize="4" Customtype="" Description="team" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="20" Vartype="Byte" Bytesize="1" Customtype="" Description="NameLength" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="21" Vartype="String" Bytesize="5" Customtype="" Description="Name" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="26" Vartype="Byte" Bytesize="1" RLECount="2" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="28" Vartype="4 Bytes" Bytesize="4" RLECount="14" Customtype="" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="84" Vartype="Pointer" Bytesize="4" RLECount="2" Customtype="" PointerSize="4" DisplayMethod="Unsigned Integer"/>
       </Elements>
     </Structure>
   </Structures>
+  <LuaScript>
+</LuaScript>
   <DisassemblerComments>
     <DisassemblerComment>
       <Address>"Tutorial-i386.exe"+267E7</Address>
