@@ -2202,7 +2202,7 @@ unregistersymbol(shouldExit)
     </CheatEntry>
     <CheatEntry>
       <ID>45</ID>
-      <Description>"CreateThread SetWindowText (Win API) - and free allocated thread mem"</Description>
+      <Description>"CreateThread SetWindowText (Win API x86) - and free allocated thread mem"</Description>
       <LastState/>
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>alloc(setWindowTextMem,1000)
@@ -2266,6 +2266,74 @@ unregisterSymbol(set)
 </AssemblerScript>
     </CheatEntry>
     <CheatEntry>
+      <ID>225</ID>
+      <Description>"executeCode SetWindowText (Win API x86)"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+[ENABLE]
+function setWindowText(old, new, reverse)
+  assert(type(old) == 'string' and type(new) == 'string', 'setWindowText requires two strings!')
+  -- x86 code
+  local script = [[
+    [%s]
+    alloc(setWindowTextMem,1000)
+    registersymbol(setWindowTextMem)
+    label(fail)
+    setWindowTextMem:
+      mov ebx, [ebp+8] // pointer to args
+      push [ebx] // window name
+      push 0 // lpClassName
+      call FindWindowA
+      test eax,eax
+      je fail // both findwindow and setwindow ret 0 on fail
+      push [ebx+4] // new caption
+      push eax // hWnd
+      call SetWindowTextA
+    fail:
+      ret 4 // stdcall so func must pop arg
+    [%s]
+    unregistersymbol(setWindowTextMem)
+    dealloc(setWindowTextMem)
+  ]]
+  script = script:format('ENABLE','DISABLE')
+
+  local success, di = autoAssemble(script)
+  if success then
+    -- assuming all these allocs work fine
+    local params = allocateMemory(8)
+    if false or reverse then old,new = new,old end -- swap names for testing
+    local asmname = allocateMemory(#old+1)
+    local asmnewname = allocateMemory(#new+1)
+
+    writeString(asmname, old)
+    writeString(asmnewname, new)
+    writeInteger(params, asmname)
+    writeInteger(params+4, asmnewname)
+
+    local res = executeCode('setWindowTextMem', params)
+
+    autoAssemble(script,di)
+    deAlloc(asmname)
+    deAlloc(asmnewname)
+    deAlloc(params)
+    if res == 0 then
+      return false, 'Failed to find and change caption'
+    else
+      return true, 'success'
+    end
+  else
+    return false,('Failed to create intermediate function to call win api'):format(success)
+  end
+end
+if syntaxcheck then return end
+
+setWindowText('Cheat Engine Tutorial v3.4', 'Hello Kitty')
+[DISABLE]
+setWindowText('Cheat Engine Tutorial v3.4', 'Hello Kitty', true)
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
       <ID>43</ID>
       <Description>"CreateThread step2"</Description>
       <LastState/>
@@ -2321,7 +2389,6 @@ timer.Interval = 100 -- run 1/10 a second later
         <CheatEntry>
           <ID>201</ID>
           <Description>"No description"</Description>
-          <LastState Value="0000003B" RealAddress="0178E308"/>
           <ShowAsHex>1</ShowAsHex>
           <VariableType>4 Bytes</VariableType>
           <Address>"Tutorial-i386.exe"+1FD5D0</Address>
@@ -3305,7 +3372,6 @@ $getAddress('[Tutorial-i386.exe+1FD5D0]')+0x400+math.pow(2,7):
         <CheatEntry>
           <ID>204</ID>
           <Description>"Step 2"</Description>
-          <LastState Value="59" RealAddress="0178E308"/>
           <ShowAsSigned>1</ShowAsSigned>
           <VariableType>4 Bytes</VariableType>
           <Address>[Tutorial-i386.exe+1FD5D0]+480</Address>
@@ -4652,8 +4718,6 @@ print("\r\n\r\n")
       </Elements>
     </Structure>
   </Structures>
-  <LuaScript>
-</LuaScript>
   <DisassemblerComments>
     <DisassemblerComment>
       <Address>"Tutorial-i386.exe"+267E7</Address>

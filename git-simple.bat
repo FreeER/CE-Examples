@@ -11,6 +11,8 @@ git add *
 if [%errorlevel%] NEQ [0] goto nogit
 git commit -m %msg%
 if [%errorlevel%] == [0] git push origin
+goto end
 :nogit
 echo You don't have git installed you git!
 pause
+:end
