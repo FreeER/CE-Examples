@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"Run me!"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+[ENABLE]
+if syntaxcheck then return end
+local formA = createForm(true)
+formA.setDoNotSaveInTable(true)
+local formB = createForm(true)
+formB.setDoNotSaveInTable(true)
+
+local sw,sh = getWorkAreaWidth(), getWorkAreaHeight()
+formB.Left, formB.Top = sw-formB.Width-5, sh-formB.Height-5
+
+local form
+local function test()
+  -- get window handle based on caption/title
+  --local hwnd = findWindow(nil, 'Supernatural S09E03 - VLC media player')
+  form = form == formB and formA or formB
+  if not form then return end
+  local hwnd = form.Handle
+  -- guess what I was watching at the time lol
+  -- if found and not the focused window, make it so
+  if hwnd ~= 0 and getForegroundWindow() ~= hwnd then
+    local success = executeCodeLocal('SetForegroundWindow',hwnd) ~= 0
+    ---print(executeCodeLocal('GetLastError'))
+  end
+
+  --[[
+  executeCodeLocal uses CE's memory, not the attached process' memory,
+  that way you don't actually need to attach to any process for this to work
+  (some memory does need to be allocated for the call).
+  --]]
+end
+
+local t = createTimer()
+t.Interval = 333
+local c = 0
+t.OnTimer = function(t)
+  if c &gt; 3*5 then
+    t.destroy()
+    formA.hide() formA.destroy() formA = nil
+    formB.hide() formB.destroy() formB = nil
+    return
+  end
+  test()
+  formA.Color = formA.isForegroundWindow() and 0x0000FF or 0xFF0000
+  formB.Color = formB.isForegroundWindow() and 0x0000FF or 0xFF0000
+  c = c + 1
+end
+
+[DISABLE]
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
