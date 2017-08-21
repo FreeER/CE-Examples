@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"Auto Assemble script"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+[ENABLE]
+-- found via CE window dissect (mem viewer-&gt;tools)
+--local hwnd = 0x160834
+--print(getWindowClassName(hwnd))
+--print(getWindowCaption(hwnd))
+SetWindowPosScript = ([[
+[%s]
+alloc(SetWindowPosIntermediate,1024)
+SetWindowPosIntermediate:
+  push ebp
+  mov ebp,esp
+  mov eax, [ebp+8]
+
+  push [eax+00] // uFlags
+  push [eax+04] // cy
+  push [eax+08] // cx
+  push [eax+0C] // Y
+  push [eax+10] // X
+  push [eax+14] // hwndInsertAfter
+  push [eax+18] // hwnd
+  call SetWindowPos
+  pop ebp
+  ret 4 // stdcall
+  registerSymbol(SetWindowPosIntermediate)
+[%s]
+dealloc(SetWindowPosIntermediate)
+unregisterSymbol(SetWindowPosIntermediate)
+]]):format('ENABLE','DISABLE')
+local success, di = autoAssemble(SetWindowPosScript)
+assert(success, 'failed to create intermediate function to call win api')
+
+local function SetWindowPos(hwnd, hwndInsertAfter, X, Y, cx, cy, uFlags)
+  local paramMemory = allocateMemory(7*4)
+  local arguments = {hwnd,hwndInsertAfter,X,Y,cx,cy,uFlags}
+  assert(paramMemory, 'failed to allocate memory in SetWindowPos for arguments')
+  for k,v in ipairs(arguments) do
+    writeInteger(paramMemory+4*(7-k), v)
+  end
+  local res = executeCode('SetWindowPosIntermediate',paramMemory)
+  deAlloc(paramMemory)
+  return res
+end
+
+if syntaxcheck then
+  autoAssemble(SetWindowPosScript, di) -- disable/dealloc
+  return
+end
+
+local hwnd = FindWindow(nil, 'Cheat Engine Tutorial v3.4')
+assert(hwnd, 'Failed to find Tutorial window')
+local res = SetWindowPos(hwnd, 0, 0, 0, 640, 480, 2|4)
+
+autoAssemble(SetWindowPosScript, di) -- disable/dealloc
+
+[DISABLE]
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
