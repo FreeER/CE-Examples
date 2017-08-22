@@ -1,0 +1,41 @@
+https://imgur.com/a/QZJqo
+https://imgur.com/a/TRd9O
+
+Abystus - Today at 4:48 PM
+How does one get the right-click menu of the search results list in Lua? I know how to get the actual results (getCurrentMemscan()), but not the control itself. I would like to add a menu item to the popup menu on that control.
+FreeER - Today at 5:01 PM
+@Abystus this seems to work, until you actually right click to try it out:
+
+local flp = MainForm.foundlistpopup
+for k=0,flp.Items.Count-1 do print(tostring(flp.Items[k].Caption)) end print('')
+
+local mi = createMenuItem(flp)
+mi.Caption = 'Test'
+mi.OnClick = function(...)
+  local arguments = {...}
+  print(#arguments)
+  for k,v in pairs(arguments) do
+    print(k, tostring(v))
+  end
+end
+flp.Items.add(mi)
+
+for k=0,flp.Items.Count-1 do print(tostring(flp.Items[k].Caption)) end
+
+
+I'm guessing the menu is recreated every time you right click but I haven't actually looked at the source yet.
+well, using flp.Items.insert(0,mi) worked... strange.
+@DB ^ bug?
+Abystus - Today at 5:11 PM
+Yeah you should be able to do that directly in the autorun folder
+I'll try that later on thank you for the information
+@FreeER I really appreciate the quick response on that one
+FreeER - Today at 5:14 PM
+no problem :smiley:
+hm, inserting up to .Count-3 works. That happens to be about where the list would normally end without the two custom types I have, there also happen to be 3 separators but that seems less likely to be related imo
+and yes, adding 2 custom types means I have to adjust it to .Count-5 for the test item to appear.
+DB - Today at 5:30 PM
+Just insert your menuitem BEFORE MainForm.miDisplayDouble.MenuIndex and you'll be fine
+everything after that will get deleted on popup
+DB - Today at 5:37 PM
+and if you insist on having it at the end, hook MainForm.foundlistpopup.OnPopup and each time it's called add your menu item to the end
