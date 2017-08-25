@@ -25,7 +25,7 @@ for (var i in texts) {
 javascript:function textNodesUnder(e){for(var t,n=[],r=document.createTreeWalker(e,NodeFilter.SHOW_TEXT,null,!1);t=r.nextNode();)n.push(t);return n}var texts=textNodesUnder(document.querySelector("table.forumline")).filter(function(e,t,n){return e.length>200});for(var i in texts){for(var text=texts[i],nodes=[],remaining=text.splitText(200);remaining.length>200;remaining=remaining.splitText(200))nodes.push(remaining);for(var j in nodes)nodes[j].parentNode.insertBefore(document.createElement("br"),nodes[j]);var last=nodes[nodes.length-1];last&&last.parentNode.insertBefore(document.createElement("br"),last.nextSibling)}
 
 
-// CSS version
+// CSS version (css courtesy of Sn34kyMofo/h3x1c)
 var s = document.createElement('style')
 s.innerHTML = '.long { table-layout: fixed;max-width: 100vw;word-wrap: break-word; }'
 document.head.append(s)
