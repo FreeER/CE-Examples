@@ -1,0 +1,25 @@
+A quick explanation of value types: https://cdn.discordapp.com/attachments/315912485762760704/349564821760376835/unknown.png
+
+73 can be stored in different ways, first you need a basic understanding of hexadecimal because it's the easiest way to show the values of multiple bytes
+In hex each digit is a multiple of a power of 16 instead of 10. so in hex 123 is 3*16^0 + 2*16^1 + 1*16^2 = 3*1 + 2*16 + 1*256 = 3+32+256=291. Similar to how 123 in decimal is 3*10^0 + 2*10^1 + 1*10^2 = 3+20+100=123 or binary 101 is 1*2^0 + 0*2^1 + 1*2^2 = 1+0+4=5
+
+So with that understanding, 73 in 1 byte is hex 49. Now when you move to storing it as 2 bytes, there are two ways to do it, either 49 00 or 00 49. The first way is called Little Endian and allows you to read that same value as either 1 byte or 2 bytes, this is the format Windows generally uses. The second is called Big Endian and is the more "natural" way because it follows what how you're taught numbers, the most significant digits go on the left and you can have leadng 0s. Most emulators will use Big Endian.
+
+Moving on to 4 and 8 bytes is basically the same thing.
+Little Endian: 49 00 00 00 and 49 00 00 00 00 00 00 00
+Big Endian: 00 00 00 49 and 00 00 00 00 00 00 00 49
+
+To represent positive and negative numbers, essentially the first bit of the value represents the sign. If it's 0 then the number is positive and if it's negative then it's 1. So 0x7F which is 0111 1111 in binary is positive 127 while 0x80 is 1000 0000 is -128. There are instructions that use that sign bit as a sign value and thus understand positive/negative values, and there are instructions that use it as simply part of the value and do not understand positive negative. Using those instructions means the value is "unsigned" and always positive. This is why there is a "jump above" (ja) and a "jump greater" (jg) even though they seem like they should do the same thing, jg uses the sign as a positive/negative indicator while ja does not.
+
+Next are Float and Double. While you can display the values in hex they don't correspond 1 to 1, they aren't simply a different base like binary and hex, they are a completely different way to represent values based on scientific notation.
+
+So you have to understand scientific notation. Which is basically the idea that you can represent say 123 as 1.23 * 10 ^ 2, because 10 is the base and 1 is the most significant value, and 10^2 (100) is how much you have to divide 123 by to get to 1.23.
+
+Now floating point numbers implicitly use base 2 because they are ultimately stored in binary. As for how the memory is split up to store each part, one bit is used to store the sign (positive or negative), then some of the bits are used for the significant values (1.23), and the rest are used to represent the exponent (2). Floats are 32 bits while doubles are 64 bits, with more bits doubles can store more information and so be more accurate. There are some special values that represent things like positive and negative Infinity and NaN (Not a Number)
+You can google more info on floating point numbers and the IEEE 754 standard if you're interested in more detail, but suffice to say that the bytes are completely different (there are some websites that'll do the conversion for you or you can just use CE) :smiley:
+
+Which leaves string and Array of Bytes :)
+A string is mostly just a series of numbers that represents the characters you want in that string, though each programming language can treat their "string" type a bit differently. Which numbers represent what was arbitrarily decided by a bunch of people a long time ago. Just go to asciitable.com and see what they are but feel free to google more if you're interested. While there are others like Unicode they are almost always backwards compatible with ASCII, so unless you're using a language like chinese etc. that's probably all you need to know.
+But what that means is that the string "Hello" is stored in memory using the bytes 48 65 6C 6C 6F. If it's a "wide" string then each character is 2 bytes long 48 00 65 00 6C 00 6C 00 6F 00, strings also often end with a 0 value to mark where the end is when they are referenced using pointers, thoughs some languages choose to store the length nearby so that's not a given.
+
+An array of bytes aka AOB is literally any set of bytes to search for so 48 65 6C 6C 6F is an AOB.
