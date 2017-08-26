@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"Synchronous Timer"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+if syntaxCheck then return end
+t = t or createTimer()
+t.Interval = 500
+t.OnTimer = function()
+  print(('%i says: hi!!!!'):format(memrec.id))
+  t.destroy() t=nil
+end
+
+[ENABLE]
+[DISABLE]
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"Asynchronous Timer"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript Async="1">{$lua}
+if syntaxCheck then return end
+t = t or createTimer()
+t.Interval = 500
+t.OnTimer = function()
+  print(('%i says: hi!!!!'):format(memrec.id))
+  t.destroy() t=nil
+end
+
+[ENABLE]
+[DISABLE]
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>2</ID>
+      <Description>"Asynchronous Thread"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript Async="1">{$lua}
+[ENABLE]
+if syntaxCheck then return end
+count = 0
+thethread = createThread(function(Thread)
+  while true do
+    if Thread.Terminated then break end
+    sleep(100) -- interval
+    print(('%s %i says: hi!!!!'):format(os.clock(), memrec.id))
+  end
+end)
+[DISABLE]
+thethread.terminate()
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
