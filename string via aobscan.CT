@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"No description"</Description>
+      <LastState RealAddress="0059E564"/>
+      <VariableType>String</VariableType>
+      <Length>36</Length>
+      <Unicode>0</Unicode>
+      <CodePage>0</CodePage>
+      <ZeroTerminate>1</ZeroTerminate>
+      <Address>"Tutorial-i386.exe"+19E564</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>3</ID>
+      <Description>"No description"</Description>
+      <LastState Value="57 65 6C 63 6F 6D 65 20 74 6F 20 74 68 65 20 43 68 65 61 74 20 45 6E 67 69 6E 65 20 54 75 74 6F 72 69 61 6C" RealAddress="0059E564"/>
+      <ShowAsHex>1</ShowAsHex>
+      <VariableType>Array of byte</VariableType>
+      <ByteLength>36</ByteLength>
+      <Address>"Tutorial-i386.exe"+19E564</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"Located"</Description>
+      <LastState RealAddress="0059E564"/>
+      <VariableType>String</VariableType>
+      <Length>36</Length>
+      <Unicode>0</Unicode>
+      <CodePage>0</CodePage>
+      <ZeroTerminate>1</ZeroTerminate>
+      <Address>inject</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>2</ID>
+      <Description>"Auto Assemble script"</Description>
+      <LastState Activated="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$lua}
+function byteTableToAOBString(bytes)
+  for k,v in ipairs(bytes) do
+    bytes[k] = string.format('%x',v)
+  end
+  return table.concat(bytes,' ')
+end
+function stringToAOBString(string,isunicode)
+  return byteTableToAOBString(isunicode and wideStringToByteTable(string) or stringToByteTable(string))
+end
+
+local thestring = 'Welcome to the Cheat Engine Tutorial'
+local symbolname = 'INJECT'
+local bytes = stringToAOBString(thestring)
+-- originally intended to use define but it seems aobscan runs first so...
+return ('aobscan(%s, %s)'):format(symbolname, bytes)
+{$asm}
+// ...
+registerSymbol(INJECT)
+
+[DISABLE]
+// ...
+unregisterSymbol(INJECT)
+
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
