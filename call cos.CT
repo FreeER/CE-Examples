@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"x86 Cos"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+
+aobscanmodule(INJECT,Tutorial-i386.exe,8B 83 80 04 00 00) // should be unique
+alloc(newmem,$1000)
+
+label(code)
+label(return)
+
+newmem:
+  dq (double)0.785398 // in radians, use any converter
+  dq (double)350      // multiplier
+code:
+  //mov eax,[ebx+00000480]
+  // save ecx and edx registers used by cos
+  push edx
+  push ecx
+  // push angle in radians
+  push [newmem+4]
+  push newmem
+  // call function, possibly could destroy last value in fpu stack...
+  call cos
+  // multiply result
+  fmul qword ptr [newmem+8]
+  // for example fistp converts to int, reusing space by pushed double
+  // just use fstp dword ptr for float and fstp qword ptr for double
+  fistp dword ptr [esp]
+  // load converted and stored value into eax
+  mov eax,[esp]
+  add esp,8 // remove pushed double from stack
+  // restore registers for the rest of the code
+  pop ecx
+  pop edx
+  jmp return
+
+INJECT:
+  jmp code
+  db 90 90 90
+return:
+registersymbol(INJECT)
+
+[DISABLE]
+
+INJECT:
+  db 8B 83 80 04 00 00 29 D0
+
+unregistersymbol(INJECT)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "Tutorial-i386.exe"+23B78
+
+"Tutorial-i386.exe"+23B56: 8D 55 DC              -  lea edx,[ebp-24]
+"Tutorial-i386.exe"+23B59: 8D 4D F4              -  lea ecx,[ebp-0C]
+"Tutorial-i386.exe"+23B5C: E8 5F 99 FE FF        -  call Tutorial-i386.exe+D4C0
+"Tutorial-i386.exe"+23B61: E8 6A B4 FE FF        -  call Tutorial-i386.exe+EFD0
+"Tutorial-i386.exe"+23B66: 50                    -  push eax
+"Tutorial-i386.exe"+23B67: 85 C0                 -  test eax,eax
+"Tutorial-i386.exe"+23B69: 75 65                 -  jne Tutorial-i386.exe+23BD0
+"Tutorial-i386.exe"+23B6B: B8 05 00 00 00        -  mov eax,00000005
+"Tutorial-i386.exe"+23B70: E8 8B AB FE FF        -  call Tutorial-i386.exe+E700
+"Tutorial-i386.exe"+23B75: 8D 50 01              -  lea edx,[eax+01]
+// ---------- INJECTING HERE ----------
+"Tutorial-i386.exe"+23B78: 8B 83 80 04 00 00     -  mov eax,[ebx+00000480]
+"Tutorial-i386.exe"+23B7E: 29 D0                 -  sub eax,edx
+// ---------- DONE INJECTING  ----------
+"Tutorial-i386.exe"+23B80: 89 83 80 04 00 00     -  mov [ebx+00000480],eax
+"Tutorial-i386.exe"+23B86: 8D 55 D4              -  lea edx,[ebp-2C]
+"Tutorial-i386.exe"+23B89: E8 12 62 01 00        -  call Tutorial-i386.exe+39DA0
+"Tutorial-i386.exe"+23B8E: 8B 55 D4              -  mov edx,[ebp-2C]
+"Tutorial-i386.exe"+23B91: 8B 83 6C 04 00 00     -  mov eax,[ebx+0000046C]
+"Tutorial-i386.exe"+23B97: E8 24 00 07 00        -  call Tutorial-i386.exe+93BC0
+"Tutorial-i386.exe"+23B9C: 83 BB 80 04 00 00 00  -  cmp dword ptr [ebx+00000480],00
+"Tutorial-i386.exe"+23BA3: 7D 2B                 -  jnl Tutorial-i386.exe+23BD0
+"Tutorial-i386.exe"+23BA5: A1 14 02 55 00        -  mov eax,[Tutorial-i386.exe+150214]
+}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>0</ID>
+          <Description>"x86 Step 2"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>"Tutorial-i386.exe"+1FD5D0</Address>
+          <Offsets>
+            <Offset>480</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>5</ID>
+      <Description>"x64 Cos"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+aobscanmodule(INJECT,Tutorial-x86_64.exe,29 93 90 07 00 00) // should be unique
+alloc(newmem,$1000,"Tutorial-x86_64.exe"+2B227)
+
+label(code)
+label(return)
+label(x64step2)
+
+newmem:
+  dq (double)0.785398
+  dq (double)350
+x64step2:
+  dq 0
+code:
+  //sub [rbx+00000790],edx
+  // save step 2 address
+  mov [x64step2], rbx
+  add [x64step2], 790
+  // save xmm0
+  sub esp, 10
+  movdqu [esp], xmm0
+  // load angle (in radians)
+  movsd xmm0, [newmem]
+  // all cos
+  sub esp,20 // shadow space
+  call cos
+  add esp,20
+  // multiply
+  mulsd xmm0, [newmem+8]
+  // for example, convert to int
+  cvtsd2si edx, xmm0
+  // store to memory
+  mov [rbx+790],edx
+  // restore xmm0
+  movdqu xmm0, [esp]
+  add esp,10
+  jmp return
+
+INJECT:
+  jmp code
+  nop
+return:
+registersymbol(INJECT)
+registersymbol(x64step2)
+
+[DISABLE]
+INJECT:
+  db 29 93 90 07 00 00
+
+unregistersymbol(INJECT)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "Tutorial-x86_64.exe"+2B227
+
+"Tutorial-x86_64.exe"+2B200: 55                             -  push rbp
+"Tutorial-x86_64.exe"+2B201: 48 89 E5                       -  mov rbp,rsp
+"Tutorial-x86_64.exe"+2B204: 48 8D 64 24 D0                 -  lea rsp,[rsp-30]
+"Tutorial-x86_64.exe"+2B209: 48 89 5D F0                    -  mov [rbp-10],rbx
+"Tutorial-x86_64.exe"+2B20D: 48 89 CB                       -  mov rbx,rcx
+"Tutorial-x86_64.exe"+2B210: 48 C7 45 F8 00 00 00 00        -  mov [rbp-08],00000000
+"Tutorial-x86_64.exe"+2B218: 90                             -  nop 
+"Tutorial-x86_64.exe"+2B219: B9 05 00 00 00                 -  mov ecx,00000005
+"Tutorial-x86_64.exe"+2B21E: E8 ED 4A FE FF                 -  call Tutorial-x86_64.exe+FD10
+"Tutorial-x86_64.exe"+2B223: 67 8D 50 01                    -  lea edx,[rax+01]
+// ---------- INJECTING HERE ----------
+"Tutorial-x86_64.exe"+2B227: 29 93 90 07 00 00              -  sub [rbx+00000790],edx
+// ---------- DONE INJECTING  ----------
+"Tutorial-x86_64.exe"+2B22D: 8B 93 90 07 00 00              -  mov edx,[rbx+00000790]
+"Tutorial-x86_64.exe"+2B233: 48 8D 4D F8                    -  lea rcx,[rbp-08]
+"Tutorial-x86_64.exe"+2B237: E8 54 B0 01 00                 -  call Tutorial-x86_64.exe+46290
+"Tutorial-x86_64.exe"+2B23C: 48 8B 55 F8                    -  mov rdx,[rbp-08]
+"Tutorial-x86_64.exe"+2B240: 48 8B 8B 68 07 00 00           -  mov rcx,[rbx+00000768]
+"Tutorial-x86_64.exe"+2B247: E8 E4 AA 08 00                 -  call Tutorial-x86_64.exe+B5D30
+"Tutorial-x86_64.exe"+2B24C: 83 BB 90 07 00 00 00           -  cmp dword ptr [rbx+00000790],00
+"Tutorial-x86_64.exe"+2B253: 7D 35                          -  jnl Tutorial-x86_64.exe+2B28A
+"Tutorial-x86_64.exe"+2B255: 48 8B 0D CC 33 17 00           -  mov rcx,[Tutorial-x86_64.exe+19E628]
+"Tutorial-x86_64.exe"+2B25C: E8 5F E1 12 00                 -  call Tutorial-x86_64.exe+1593C0
+}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>4</ID>
+          <Description>"No description"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>x64step2</Address>
+          <Offsets>
+            <Offset>0</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
