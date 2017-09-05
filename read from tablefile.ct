@@ -27,18 +27,21 @@ local str = readStringLocal(data.Memory,data.Size)
 UDF1.CELabel1.Caption = str
 
 --[[
+UDF1.CEMemo1.lines.beginUpdate()
 -- clear memo of old strings
 UDF1.CEMemo1.lines.clear()
 -- potential speed improvment using local function
 local add = UDF1.CEMemo1.append
 -- split string by lines and add each to the memo (has scroll bar)
 for l in str:gmatch('.-\r?\n') do add(l) end
+UDF1.CEMemo1.lines.endUpdate()
 --]]
 
 -- hm, not sure how linebreak works..., this did nothing in testing
 -- UDF1.CEMemo1.lines.LineBreak = 'a'
 -- Text has all the strings in the list as 1 string, just like we read above
 UDF1.CEMemo1.lines.Text = str
+--UDF1.CEMemo1.lines.setText(str)
 --print(UDF1.CEMemo1.lines.Count)
 
 -- make sure form is visible, otherwise this was probably pretty pointless lol
