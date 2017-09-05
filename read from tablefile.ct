@@ -20,8 +20,16 @@ if syntaxcheck then return end
 local tf = findTableFile('test.txt')
 local data = tf.getData()
 
+--[[
 -- read data as string, local because it's in CE's memory not any attached process'
 local str = readStringLocal(data.Memory,data.Size)
+--]]
+
+-- DB suggestion http://forum.cheatengine.org/viewtopic.php?p=5731183&amp;sid=0d74ec8febc16ccf6af3444625e0c963#5731183
+local ss = createStringStream()
+ss.CopyFrom(data,0)
+local str = ss.DataString
+ss.destroy()
 
 -- set label
 UDF1.CELabel1.Caption = str
