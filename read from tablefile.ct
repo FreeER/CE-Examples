@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <Forms>
+    <UDF1 Class="TCEForm" Encoding="Ascii85">ZP#5,6Hy$7?k5KW77_@6iLAiPJKu9BREZZDNm@p!-5=]vQW!EFcVgU)7hbv=U4oSsZ^CNH6iz0m(mm:g@S@i:!u.Ya8qKF}(*V+G_MJb5[RpIy^qSV).9ax4S?gp^VK^H@2Ukx%F0cE:?b%tkTHp7{[U[:{?{uc$,1(O2FFxG/^(.a1Z{vW}ubS0)[qu)9!HdWJe.q#T_8l$k.PP=%qvBZzzkmGHtK*vLTpw=};+Kyz[mkLG5=e]aC9^;;Rtj4wZKbjmMZV/K??#pxJX}HbPnWmL/K@_S+T=WT[xjlDW3P_BKKA/9;tnBvy+{}!#Oo9I$asC=@?-OfUY}e/.]NEwr)U0Wed[foeB!-6[4=H7Q=F0GKK1(^;oc#/ygu^#4E_xgKJ*s[;oc#/ygv8)-0O3%(%HkP]W*@zUY}n==*ACX7hYd?ec_/m+B4%2czpr4ORq1yzVQ0e;r1aMy{tDN))6mFFTK8myS;,!USD}A/?J?/S6+LvedYC*+H;O(0am0Ha20]95r7qeSP[sFfmsot6?gk2uob}MkX/,j!AtTIy/^*pOZpPO.I9B,#q_6D:KzBR2n!SzFf4Fb0I?)}0mTA}mC%C[oC7!)cq^-{AhLjDfyn{t1u6=zR!UEFa1M{JK)oMR0nP%Q1w0FU762@{S^Xf;!Z]qGfzkq_1x@c}7Dz3iT41#RYvuHe4d)![1z-!r7LYA4TY$DeZ2^W=w@h*v0OtU?1$GPY7U)VDTi}_/aDm[g!d24L1Lpw61(j,E7eFqMTtK/NaslQ7%}jF)M*RAW/M5+HHbeNdUA5gfgn#q;]^uSCZC]dH^/p9j!3UonCh(4M.eQX4,2@iZtxoH1J)^f7Ctv(awCxw.d42VvyKcHc7_*v3tgpL%5T0(,Ja6u9HnV%!eEkI</UDF1>
+  </Forms>
+  <Files>
+    <test.txt Encoding="Ascii85">ZP(X@1VI!9)Y0_%VIn_%]][VUAc4J.9R=wh0^B)ZTF/ICnw][VULTL(?1ML}[vhF1]v1LO[s8;oshBiOIwk^=iOIrbV^$M[.fU2=cGw,.hvi^/+dE4+@[BHio.m9*;nrOk;nrOk;nrOk;l@DE;zlkXtZ%GutZ%GutZ%GutnaMvtnaMv@2W2iv%a(wv%a(wvwpCCuzs,9uztuNmi2?6gY_;.gY{d3ll7DJll7DJQ?%H;pRAv)pR8Z3U#wrOU#wrOU#ws9xn%uf^bK!Q^bv1U^bv1U^bv1U^g$si;o?BU;ksP;;ksP;;ksP;;ksRXU{ahfS4F%k0#+@RijY.rtRiR=QL6{BMfOm3We/bb/TZNDUc:Y*HGak42+9a!evm!H.0VGIg)D0^9F9O7kvKwe#NsqN2,1D8am3;Y$PtkvBu7k,pd3+-!g9Ku:wuI)IYM+9/[OLaog,L*e2xGe5jw,.rm{{19Z?;Mbj0Zh*Dfv8R7b3iV4Z1aY{rG,j)^BzJ3?BE;/HQswIggt,_IJgg6tu5N9;N@9nm_(cf^]q.1R)iglF5WNA=iKBaBBJk3b%gJVJTI?)AV.(2#MfX7?Ml?dp</test.txt>
+  </Files>
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"Read from file and display form"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+[ENABLE]
+-- only run if not editing, AA script used to avoid prompt at start
+if syntaxcheck then return end
+-- find the file and get the data (memory stream object)
+local tf = findTableFile('test.txt')
+local data = tf.getData()
+
+-- read data as string, local because it's in CE's memory not any attached process'
+local str = readStringLocal(data.Memory,data.Size)
+
+-- set label
+UDF1.CELabel1.Caption = str
+
+-- clear memo of old strings
+UDF1.CEMemo1.lines.clear()
+-- potential speed improvment using local function
+local add = UDF1.CEMemo1.append
+
+-- split string by lines and add each to the memo (has scroll bar)
+for l in str:gmatch('.-\r?\n') do add(l) end
+
+-- make sure form is visible, otherwise this was probably pretty pointless lol
+UDF1.show()
+[DISABLE]
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>

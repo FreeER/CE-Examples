@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"Gold"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>brave_s.exe+118140</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>3</ID>
+      <Description>"Hero Level"</Description>
+      <VariableType>2 Bytes</VariableType>
+      <Address>518582</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"Hero XP"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>brave_s.exe+118594</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>29</ID>
+      <Description>"Dragon Level"</Description>
+      <VariableType>2 Bytes</VariableType>
+      <Address>brave_s.exe+118584</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>30</ID>
+      <Description>"Dragon XP"</Description>
+      <VariableType>2 Bytes</VariableType>
+      <Address>brave_s.exe+118598</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>31</ID>
+      <Description>"Alicia Level"</Description>
+      <VariableType>2 Bytes</VariableType>
+      <Address>518588</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>32</ID>
+      <Description>"Alicia XP"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>5185A0</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>28</ID>
+      <Description>"Items"</Description>
+      <VariableType>Byte</VariableType>
+      <Address>brave_s.exe+118144</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>42</ID>
+      <Description>"Hero X"</Description>
+      <VariableType>2 Bytes</VariableType>
+      <Address>brave_s.exe+A5790</Address>
+      <Offsets>
+        <Offset>FA</Offset>
+        <Offset>C</Offset>
+        <Offset>150</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>43</ID>
+      <Description>"Hero Y"</Description>
+      <VariableType>2 Bytes</VariableType>
+      <Address>brave_s.exe+A5790</Address>
+      <Offsets>
+        <Offset>FC</Offset>
+        <Offset>C</Offset>
+        <Offset>150</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>44</ID>
+      <Description>"Terrible Movement Speed Hack"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ Game   : brave_s.exe
+  Version: 
+  Date   : 2017-09-02
+  Author : HJP19
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+
+aobscanmodule(INJECT,brave_s.exe,66 89 96 0A 01 00 00) // should be unique
+alloc(newmem,$1000)
+
+label(code)
+label(return)
+
+newmem:
+
+code:
+  imul edx,2
+  mov [esi+0000010A],dx
+  jmp return
+
+INJECT:
+  jmp newmem
+  nop
+  nop
+return:
+registersymbol(INJECT)
+
+[DISABLE]
+
+INJECT:
+  db 66 89 96 0A 01 00 00
+
+unregistersymbol(INJECT)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "brave_s.exe"+195C2
+
+"brave_s.exe"+19595: 8B 4D 10                       -  mov ecx,[ebp+10]
+"brave_s.exe"+19598: 03 C2                          -  add eax,edx
+"brave_s.exe"+1959A: 8B 15 90 52 51 00              -  mov edx,[brave_s.exe+115290]
+"brave_s.exe"+195A0: 89 0C 82                       -  mov [edx+eax*4],ecx
+"brave_s.exe"+195A3: 8B 54 24 10                    -  mov edx,[esp+10]
+"brave_s.exe"+195A7: C6 86 FC 00 00 00 00           -  mov byte ptr [esi+000000FC],00
+"brave_s.exe"+195AE: 8B 46 10                       -  mov eax,[esi+10]
+"brave_s.exe"+195B1: 8D 6E 10                       -  lea ebp,[esi+10]
+"brave_s.exe"+195B4: C6 86 D9 00 00 00 00           -  mov byte ptr [esi+000000D9],00
+"brave_s.exe"+195BB: C6 86 0F 01 00 00 00           -  mov byte ptr [esi+0000010F],00
+// ---------- INJECTING HERE ----------
+"brave_s.exe"+195C2: 66 89 96 0A 01 00 00           -  mov [esi+0000010A],dx
+// ---------- DONE INJECTING  ----------
+"brave_s.exe"+195C9: 66 89 9E 0C 01 00 00           -  mov [esi+0000010C],bx
+"brave_s.exe"+195D0: 8B 0D 90 52 51 00              -  mov ecx,[brave_s.exe+115290]
+"brave_s.exe"+195D6: 89 04 B9                       -  mov [ecx+edi*4],eax
+"brave_s.exe"+195D9: 0F BF 96 08 01 00 00           -  movsx edx,word ptr [esi+00000108]
+"brave_s.exe"+195E0: 8B 04 95 10 7B 4D 00           -  mov eax,[edx*4+brave_s.exe+D7B10]
+"brave_s.exe"+195E7: 83 3C B8 00                    -  cmp dword ptr [eax+edi*4],00
+"brave_s.exe"+195EB: 7C 2B                          -  jl brave_s.exe+19618
+"brave_s.exe"+195ED: 0F BF 0D BE 72 51 00           -  movsx ecx,word ptr [brave_s.exe+1172BE]
+"brave_s.exe"+195F4: 39 4D 00                       -  cmp [ebp+00],ecx
+"brave_s.exe"+195F7: 75 07                          -  jne brave_s.exe+19600
+}
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <Structures StructVersion="2">
+    <Structure Name="unnamed structure" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+      <Elements>
+        <Element Offset="0" Vartype="4 Bytes" Bytesize="4" RLECount="75" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="300" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer">
+          <Structure Name="Autocreated from 000144D8" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+            <Elements>
+              <Element Offset="0" Vartype="4 Bytes" Bytesize="4" RLECount="1024" DisplayMethod="Unsigned Integer"/>
+            </Elements>
+          </Structure>
+        </Element>
+        <Element Offset="304" Vartype="4 Bytes" Bytesize="4" RLECount="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="320" Vartype="4 Bytes" Bytesize="4" Description="Gold" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="324" Vartype="4 Bytes" Bytesize="4" RLECount="5" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="344" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="348" Vartype="4 Bytes" Bytesize="4" RLECount="124" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="844" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="848" Vartype="4 Bytes" Bytesize="4" RLECount="119" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1324" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="1328" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1332" Vartype="4 Bytes" Bytesize="4" RLECount="7" DisplayMethod="Hexadecimal"/>
+        <Element Offset="1360" Vartype="4 Bytes" Bytesize="4" RLECount="12" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1408" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="1412" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1416" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="Hexadecimal"/>
+        <Element Offset="1424" Vartype="4 Bytes" Bytesize="4" RLECount="3" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1436" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="1440" Vartype="4 Bytes" Bytesize="4" RLECount="5" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1460" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="1464" Vartype="Unicode String" Bytesize="5" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1469" Vartype="Byte" Bytesize="1" RLECount="3" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1472" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="1476" Vartype="Unicode String" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1480" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1484" Vartype="4 Bytes" Bytesize="4" RLECount="6" DisplayMethod="Hexadecimal"/>
+        <Element Offset="1508" Vartype="Unicode String" Bytesize="8" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1516" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1520" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1524" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1528" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1532" Vartype="4 Bytes" Bytesize="4" RLECount="3" DisplayMethod="Hexadecimal"/>
+        <Element Offset="1544" Vartype="Pointer" Bytesize="4" RLECount="2" PointerSize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1552" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="1556" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1560" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="1564" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1568" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="1572" Vartype="Unicode String" Bytesize="8" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1580" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="1584" Vartype="4 Bytes" Bytesize="4" RLECount="66" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1848" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="1852" Vartype="4 Bytes" Bytesize="4" RLECount="6" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1876" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1880" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="1884" Vartype="4 Bytes" Bytesize="4" RLECount="553" DisplayMethod="Unsigned Integer"/>
+      </Elements>
+    </Structure>
+    <Structure Name="players" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+      <Elements>
+        <Element Offset="0" Vartype="2 Bytes" Bytesize="2" Description="Level" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="2" Vartype="2 Bytes" Bytesize="2" Description="Dragon Level" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="4" Vartype="2 Bytes" Bytesize="2" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="6" Vartype="2 Bytes" Bytesize="2" Description="Alicia Level" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="8" Vartype="2 Bytes" Bytesize="2" RLECount="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="18" Vartype="4 Bytes" Bytesize="4" Description="XP" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="22" Vartype="4 Bytes" Bytesize="4" Description="Dragon XP" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="26" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="30" Vartype="4 Bytes" Bytesize="4" Description="Alicia XP" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="34" Vartype="4 Bytes" Bytesize="4" RLECount="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="50" Vartype="Pointer" Bytesize="4" RLECount="3" PointerSize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="62" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="66" Vartype="Unicode String" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="70" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="74" Vartype="4 Bytes" Bytesize="4" RLECount="6" DisplayMethod="Hexadecimal"/>
+        <Element Offset="98" Vartype="Unicode String" Bytesize="8" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="106" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="110" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="114" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="118" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="122" Vartype="4 Bytes" Bytesize="4" RLECount="3" DisplayMethod="Hexadecimal"/>
+        <Element Offset="134" Vartype="Pointer" Bytesize="4" RLECount="2" PointerSize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="142" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="146" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="150" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="154" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="158" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="162" Vartype="Unicode String" Bytesize="8" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="170" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="174" Vartype="4 Bytes" Bytesize="4" RLECount="66" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="438" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="442" Vartype="4 Bytes" Bytesize="4" RLECount="6" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="466" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="470" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="474" Vartype="4 Bytes" Bytesize="4" RLECount="905" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="4094" Vartype="2 Bytes" Bytesize="2" DisplayMethod="Unsigned Integer"/>
+      </Elements>
+    </Structure>
+    <Structure Name="Items" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+      <Elements>
+        <Element Offset="0" Vartype="Byte" Bytesize="1" Description="Health Potion" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1" Vartype="Byte" Bytesize="1" Description="Mana Potion" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="2" Vartype="Byte" Bytesize="1" Description="Elixir" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="3" Vartype="Byte" Bytesize="1" Description="Power Seed" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="4" Vartype="Byte" Bytesize="1" Description="Spirit Seed" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="5" Vartype="Byte" Bytesize="1" Description="Will Seed" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="6" Vartype="Byte" Bytesize="1" Description="Smart Seed" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="7" Vartype="Byte" Bytesize="1" Description="Pro Seed" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="8" Vartype="Byte" Bytesize="1" Description="Magic Seed" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="9" Vartype="Byte" Bytesize="1" Description="Lucky Seed" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="10" Vartype="Byte" Bytesize="1" Description="Power Fruit" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="11" Vartype="Byte" Bytesize="1" Description="Spirit Fruit" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="12" Vartype="Byte" Bytesize="1" Description="Will Fruit" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="13" Vartype="Byte" Bytesize="1" Description="Smart Fruit" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="14" Vartype="Byte" Bytesize="1" Description="Pro Fruit" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="15" Vartype="Byte" Bytesize="1" Description="Magic Fruit" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="16" Vartype="Byte" Bytesize="1" Description="Lucky Fruit" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="17" Vartype="Byte" Bytesize="1" Description="Orge Meat" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="18" Vartype="Byte" Bytesize="1" Description="Beef" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="19" Vartype="Byte" Bytesize="1" Description="Roc Bird Meat" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="20" Vartype="Byte" Bytesize="1" Description="Small Fish" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="21" Vartype="Byte" Bytesize="1" Description="Fish" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="22" Vartype="Byte" Bytesize="1" Description="Sea Serpent's Egg" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="23" Vartype="Byte" Bytesize="1" Description="Rotten Vegetables" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="24" Vartype="Byte" Bytesize="1" Description="Vegetables" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="25" Vartype="Byte" Bytesize="1" Description="Ripe Vegetables" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="26" Vartype="Byte" Bytesize="1" Description="Ocarina" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="27" Vartype="Byte" Bytesize="1" Description="Catnip" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="28" Vartype="Byte" Bytesize="1" Description="Magic Flute" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="29" Vartype="Byte" Bytesize="1" Description="Golden Nugget" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="30" Vartype="Byte" Bytesize="1" Description="Match" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="31" Vartype="Byte" Bytesize="1" Description="Letter of Duel" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="32" Vartype="Byte" Bytesize="1" Description="Seal Pot" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="33" Vartype="Byte" Bytesize="1" Description="Ankh of the Blessed" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="34" Vartype="Byte" Bytesize="1" Description="Dragon's Egg" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="35" Vartype="Byte" Bytesize="1" Description="Dice Dungeon Book" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="36" Vartype="Byte" Bytesize="1" Description="Dull Sword" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="37" Vartype="Byte" Bytesize="1" Description="Short Sword" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="38" Vartype="Byte" Bytesize="1" Description="Long Sword" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="39" Vartype="Byte" Bytesize="1" Description="Loon Sword" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="40" Vartype="Byte" Bytesize="1" Description="Buster Sword" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="41" Vartype="Byte" Bytesize="1" Description="Sword of Desire" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="42" Vartype="Byte" Bytesize="1" Description="Knight Sword" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="43" Vartype="Byte" Bytesize="1" Description="Katana" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="44" Vartype="Byte" Bytesize="1" Description="Elven Sword" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="45" Vartype="Byte" Bytesize="1" Description="Fire Sword" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="46" Vartype="Byte" Bytesize="1" Description="White Sword" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="47" Vartype="Byte" Bytesize="1" Description="Dark Sword" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="48" Vartype="Byte" Bytesize="1" Description="Speed Sword" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="49" Vartype="Byte" Bytesize="1" Description="Icing Blade" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="50" Vartype="Byte" Bytesize="1" Description="Sacred Sword" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="51" Vartype="Byte" Bytesize="1" Description="Magical Sword" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="52" Vartype="Byte" Bytesize="1" Description="Lightning Sword" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="53" Vartype="Byte" Bytesize="1" Description="Sword of Gain" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="54" Vartype="Byte" Bytesize="1" Description="Titan Sword" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="55" Vartype="Byte" Bytesize="1" Description="The Fastest" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="56" Vartype="Byte" Bytesize="1" Description="Orican Sword" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="57" Vartype="Byte" Bytesize="1" Description="Muramasa" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="58" Vartype="Byte" Bytesize="1" Description="Light Saber" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="59" Vartype="Byte" Bytesize="1" Description="Excalibur" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="60" Vartype="Byte" Bytesize="1" Description="Foil" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="61" Vartype="Byte" Bytesize="1" Description="Rapier" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="62" Vartype="Byte" Bytesize="1" Description="Epee" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="63" Vartype="Byte" Bytesize="1" Description="Silver Rapier" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="64" Vartype="Byte" Bytesize="1" Description="Estoc" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="65" Vartype="Byte" Bytesize="1" Description="Royal Rapier" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="66" Vartype="Byte" Bytesize="1" Description="Flash Rapier" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="67" Vartype="Byte" Bytesize="1" Description="Lightning Rapier" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="68" Vartype="Byte" Bytesize="1" Description="Will Rapier" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="69" Vartype="Byte" Bytesize="1" Description="Sylphid" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="70" Vartype="Byte" Bytesize="1" Description="Justice" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="71" Vartype="Byte" Bytesize="1" Description="Moonlight" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="72" Vartype="Byte" Bytesize="1" Description="Wooden Staff" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="73" Vartype="Byte" Bytesize="1" Description="White Staff" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="74" Vartype="Byte" Bytesize="1" Description="Magic Staff" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="75" Vartype="Byte" Bytesize="1" Description="Cane" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="76" Vartype="Byte" Bytesize="1" Description="Wizard Rod" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="77" Vartype="Byte" Bytesize="1" Description="Blessed Staff" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="78" Vartype="Byte" Bytesize="1" Description="Dark Rod" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="79" Vartype="Byte" Bytesize="1" Description="Sacred Rod" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="80" Vartype="Byte" Bytesize="1" Description="Orb" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="81" Vartype="Byte" Bytesize="1" Description="White Orb" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="82" Vartype="Byte" Bytesize="1" Description="Mars Orb" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="83" Vartype="Byte" Bytesize="1" Description="Melcrystal Orb" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="84" Vartype="Byte" Bytesize="1" Description="Tole Orb" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="85" Vartype="Byte" Bytesize="1" Description="Venus Orb" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="86" Vartype="Byte" Bytesize="1" Description="Moon Orb" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="87" Vartype="Byte" Bytesize="1" Description="Satan Orb" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="88" Vartype="Byte" Bytesize="1" Description="Shining Orb" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="89" Vartype="Byte" Bytesize="1" Description="Short Spear" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="90" Vartype="Byte" Bytesize="1" Description="Corsesca" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="91" Vartype="Byte" Bytesize="1" Description="Glaive" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="92" Vartype="Byte" Bytesize="1" Description="Heavy Spear" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="93" Vartype="Byte" Bytesize="1" Description="Lightning Spear" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="94" Vartype="Byte" Bytesize="1" Description="Magical Spear" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="95" Vartype="Byte" Bytesize="1" Description="Beast Killer" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="96" Vartype="Byte" Bytesize="1" Description="Gungnir" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="97" Vartype="Byte" Bytesize="1" Description="Holy Lance" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="98" Vartype="Byte" Bytesize="1" Description="Throwing Knife" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="99" Vartype="Byte" Bytesize="1" Description="Throwing Dagger" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="100" Vartype="Byte" Bytesize="1" Description="Cross Shuriken" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="101" Vartype="Byte" Bytesize="1" Description="Magic Dagger" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="102" Vartype="Byte" Bytesize="1" Description="Quick Needle" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="103" Vartype="Byte" Bytesize="1" Description="Kumu" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="104" Vartype="Byte" Bytesize="1" Description="Octashuriken" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="105" Vartype="Byte" Bytesize="1" Description="Moon Night" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="106" Vartype="Byte" Bytesize="1" Description="Phoenix" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="107" Vartype="Byte" Bytesize="1" Description="Super Star" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="108" Vartype="Byte" Bytesize="1" Description="Crystal" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="109" Vartype="Byte" Bytesize="1" Description="Fire Crystal" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="110" Vartype="Byte" Bytesize="1" Description="Freezing Crystal" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="111" Vartype="Byte" Bytesize="1" Description="Guided Crystal" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="112" Vartype="Byte" Bytesize="1" Description="Lightning Crystal" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="113" Vartype="Byte" Bytesize="1" Description="Gatling Crystal" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="114" Vartype="Byte" Bytesize="1" Description="Shadow Crystal" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="115" Vartype="Byte" Bytesize="1" Description="Holy Crystal" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="116" Vartype="Byte" Bytesize="1" Description="Gorgeous Crystal" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="117" Vartype="Byte" Bytesize="1" Description="Traveler's Clothes" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="118" Vartype="Byte" Bytesize="1" Description="Royal Dress" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="119" Vartype="Byte" Bytesize="1" Description="Memorial Dress" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="120" Vartype="Byte" Bytesize="1" Description="Swim Suit" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="121" Vartype="Byte" Bytesize="1" Description="Robe" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="122" Vartype="Byte" Bytesize="1" Description="Magical Robe" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="123" Vartype="Byte" Bytesize="1" Description="Goddess Shawl" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="124" Vartype="Byte" Bytesize="1" Description="Blessed Cape" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="125" Vartype="Byte" Bytesize="1" Description="Leather Armor" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="126" Vartype="Byte" Bytesize="1" Description="Ring Mail" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="127" Vartype="Byte" Bytesize="1" Description="Scale Mail" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="128" Vartype="Byte" Bytesize="1" Description="Magical Leather" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="129" Vartype="Byte" Bytesize="1" Description="Breast Plate" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="130" Vartype="Byte" Bytesize="1" Description="Light Plate" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="131" Vartype="Byte" Bytesize="1" Description="Fullplate Mail" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="132" Vartype="Byte" Bytesize="1" Description="Kacchu" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="133" Vartype="Byte" Bytesize="1" Description="Shadow Leather" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="134" Vartype="Byte" Bytesize="1" Description="Silver Plate" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="135" Vartype="Byte" Bytesize="1" Description="Becoming Hero Cast" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="136" Vartype="Byte" Bytesize="1" Description="Magical Plate" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="137" Vartype="Byte" Bytesize="1" Description="Reflector" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="138" Vartype="Byte" Bytesize="1" Description="Dragon Scale" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="139" Vartype="Byte" Bytesize="1" Description="Rune Plate" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="140" Vartype="Byte" Bytesize="1" Description="Dragon Plate" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="141" Vartype="Byte" Bytesize="1" Description="Shoes" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="142" Vartype="Byte" Bytesize="1" Description="Boots" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="143" Vartype="Byte" Bytesize="1" Description="High Heels" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="144" Vartype="Byte" Bytesize="1" Description="Greaves" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="145" Vartype="Byte" Bytesize="1" Description="Iron Getas" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="146" Vartype="Byte" Bytesize="1" Description="Speed Boots" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="147" Vartype="Byte" Bytesize="1" Description="Gold Getas" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="148" Vartype="Byte" Bytesize="1" Description="Cats Slippers" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="149" Vartype="Byte" Bytesize="1" Description="Wing Boots" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="150" Vartype="Byte" Bytesize="1" Description="Hell's High Heels" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="151" Vartype="Byte" Bytesize="1" Description="Glass High Heels" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="152" Vartype="Byte" Bytesize="1" Description="Leather Glove" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="153" Vartype="Byte" Bytesize="1" Description="Guard Glove" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="154" Vartype="Byte" Bytesize="1" Description="Bracer" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="155" Vartype="Byte" Bytesize="1" Description="Guantlet" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="156" Vartype="Byte" Bytesize="1" Description="Silver Gauntlets" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="157" Vartype="Byte" Bytesize="1" Description="Magical Bracer" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="158" Vartype="Byte" Bytesize="1" Description="Assault Bracer" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="159" Vartype="Byte" Bytesize="1" Description="Final Guard" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="160" Vartype="Byte" Bytesize="1" Description="Bracelet" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="161" Vartype="Byte" Bytesize="1" Description="Magical Bracelet" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="162" Vartype="Byte" Bytesize="1" Description="Mars Bracelet" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="163" Vartype="Byte" Bytesize="1" Description="Cloak" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="164" Vartype="Byte" Bytesize="1" Description="Resist Cloak" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="165" Vartype="Byte" Bytesize="1" Description="Magical Cloak" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="166" Vartype="Byte" Bytesize="1" Description="Invisible Cloak" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="167" Vartype="Byte" Bytesize="1" Description="Rune Cloak" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="168" Vartype="Byte" Bytesize="1" Description="Healing Cloak" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="169" Vartype="Byte" Bytesize="1" Description="Red Spirit Stone" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="170" Vartype="Byte" Bytesize="1" Description="Blue Spirit Stone" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="171" Vartype="Byte" Bytesize="1" Description="Yellow Spirit Stone" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="172" Vartype="Byte" Bytesize="1" Description="White Spirit Stone" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="173" Vartype="Byte" Bytesize="1" Description="Clear Spirit Stone" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="174" Vartype="Byte" Bytesize="1" Description="Elven King's Spirit Stone" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="175" Vartype="Byte" Bytesize="1" Description="Red Earring" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="176" Vartype="Byte" Bytesize="1" Description="Star Pierce" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="177" Vartype="Byte" Bytesize="1" Description="Moon Pierce" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="178" Vartype="Byte" Bytesize="1" Description="Rune Earring" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="179" Vartype="Byte" Bytesize="1" Description="Hairpin" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="180" Vartype="Byte" Bytesize="1" Description="Tiara" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="181" Vartype="Byte" Bytesize="1" Description="Rainbow Tiara" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="182" Vartype="Byte" Bytesize="1" Description="Royal Tiara" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="183" Vartype="Byte" Bytesize="1" Description="Necklace" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="184" Vartype="Byte" Bytesize="1" Description="Silver Necklace" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="185" Vartype="Byte" Bytesize="1" Description="Pendant" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="186" Vartype="Byte" Bytesize="1" Description="Crab's Foot" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="187" Vartype="Byte" Bytesize="1" Description="Cursed Hairband" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="188" Vartype="Byte" Bytesize="1" Description="Beginner's Mark" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="189" Vartype="Byte" Bytesize="1" Description="Speed Limit Talisman" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="190" Vartype="Byte" Bytesize="1" Description="Rock Slide Talisman" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="191" Vartype="Byte" Bytesize="1" Description="Cat Ear Band" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="192" Vartype="Byte" Bytesize="1" Description="Cat Punch" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="193" Vartype="Byte" Bytesize="1" Description="Fire Talisman" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="194" Vartype="Byte" Bytesize="1" Description="Ice Talisman" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="195" Vartype="Byte" Bytesize="1" Description="Lightning Talisman" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="196" Vartype="Byte" Bytesize="1" Description="Sacred Talisman" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="197" Vartype="Byte" Bytesize="1" Description="Power Talisman" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="198" Vartype="Byte" Bytesize="1" Description="Magic Talisman" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="199" Vartype="Byte" Bytesize="1" Description="Recovery Talisman" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="200" Vartype="Byte" Bytesize="1" Description="Life Talisman" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="201" Vartype="Byte" Bytesize="1" Description="Wisemen Talisman" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="202" Vartype="Byte" Bytesize="1" Description="Angel Talisman" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="203" Vartype="Byte" Bytesize="1" Description="Power Ring" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="204" Vartype="Byte" Bytesize="1" Description="Shield Ring" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="205" Vartype="Byte" Bytesize="1" Description="Magic Ring" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="206" Vartype="Byte" Bytesize="1" Description="Power Ring + 1" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="207" Vartype="Byte" Bytesize="1" Description="Shield Ring + 1" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="208" Vartype="Byte" Bytesize="1" Description="Magic Ring + 1" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="209" Vartype="Byte" Bytesize="1" Description="Power Ring + 2" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="210" Vartype="Byte" Bytesize="1" Description="Shield Ring + 2" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="211" Vartype="Byte" Bytesize="1" Description="Magic Ring + 2" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="212" Vartype="Byte" Bytesize="1" Description="Recovery Ring" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="213" Vartype="Byte" Bytesize="1" Description="Angel Ring" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="214" Vartype="Byte" Bytesize="1" Description="Haste Ring" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="215" Vartype="Byte" Bytesize="1" Description="Observing Ring" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="216" Vartype="Byte" Bytesize="1" Description="Light Ring" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="217" Vartype="Byte" Bytesize="1" Description="Memorial Ring" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="218" Vartype="Byte" Bytesize="1" Description="Master Kubo's Pot" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="219" Vartype="Byte" Bytesize="1" Description="Goldfish Feed" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="220" Vartype="Byte" Bytesize="1" Description="Sparrow's Tears" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="221" Vartype="Byte" Bytesize="1" Description="Aquamarine" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="222" Vartype="Byte" Bytesize="1" Description="Topaz" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="223" Vartype="Byte" Bytesize="1" Description="Amethyst" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="224" Vartype="Byte" Bytesize="1" Description="Emerald" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="225" Vartype="Byte" Bytesize="1" Description="Ruby" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="226" Vartype="Byte" Bytesize="1" Description="Sapphire" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="227" Vartype="Byte" Bytesize="1" Description="Diamond" DisplayMethod="Unsigned Integer"/>
+      </Elements>
+    </Structure>
+  </Structures>
+  <Comments>Brave Soul Game</Comments>
+</CheatTable>
