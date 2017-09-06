@@ -1,0 +1,13 @@
+Say your game has stats stored in a "Stat" object and an array of those stats, you may find, 500 plus instances of Stats but there's not currently any way to scan for a Stats[] from the mono dissector.
+
+This script lets you do that.
+
+```lua
+-- some address you found in Stats[] (not Stat!)
+local objectAddr = 0x04039F9C
+
+objectAddr = mono_object_findRealStartOfObject(objectAddr)
+local klass = mono_object_getClass(objectAddr)
+local found = mono_class_findInstancesOfClassListOnly('', klass)
+for k,v in ipairs(found) do print(('%x'):format(v)) end
+```
