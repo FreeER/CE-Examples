@@ -7,5 +7,7 @@ local objectAddr = 0x04039F9C
 
 objectAddr = mono_object_findRealStartOfObject(objectAddr)
 local klass = mono_object_getClass(objectAddr)
+-- first is the domain, mono_class_getNamespace(klass)
+-- was empty so I used an empty string
 local found = mono_class_findInstancesOfClassListOnly('', klass)
 for k,v in ipairs(found) do print(('%x'):format(v)) end
