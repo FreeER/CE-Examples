@@ -1,0 +1,32 @@
+https://imgur.com/a/Uzjth
+
+FreeER - Today at 6:14 PM
+@DB am I being stupid or is CE actually fucking with me here? :stuck_out_tongue: 
+script
+// INJECTION POINT: step2 sub "Tutorial-x86_64.exe"+2B227 
+newmem:
+  xor rdx, rdx
+  mov rdx, dword ptr [data]
+code:
+  sub [rbx+00000790],edx
+  jmp return
+data:
+  dd -1, 0x11111111
+
+assembled code:
+FFFF0000 - 48 31 D2              - xor rdx,rdx
+FFFF0003 - 48 8B 15 14000000     - mov rdx,[FFFF001E] { [255] }
+
+
+Which reads the 8 byte value 11111111FFFFFFFF instead of the 4 byte value FFFFFFFF (-1).
+
+Was trying to test movsxd because I wasn't 100% certain how it worked and found this happening.(edited)
+DB - Today at 7:14 PM
+mov rdx,[FFFF001E] will read the 64-bit value at ffff001e yes
+if you wish to only load the lower 32-bits use, mov edx,[data]
+FreeER - Today at 7:21 PM
+ah ok, I was expecting dword ptr to cause it to read 32 bits (or error) :smiley:
+DB - Today at 7:38 PM
+nah, it 'fixes' it for you. Just like using sub [ebx+790],edx will make it sub [rbx+790],edx for you
+FreeER - Today at 7:39 PM
+ok, something to remember / make a note of :smiley: Thanks for your time!(edited)

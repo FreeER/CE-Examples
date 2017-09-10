@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"findInstance (and hope there's only 1)"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+if syntaxcheck then return end
+[ENABLE]
+LaunchMonoDataCollector()
+klass = mono_findClass('', 'LevelManager')
+local t = mono_class_findInstancesOfClassListOnly('', klass)
+if #t ~= 1 then
+  error('Failed to get 1 LevelManager')
+else
+  registerSymbol('theLevelManager', t[1], true)
+  getAddressList().getMemoryRecordByID(6).reinterpret()
+end
+
+[DISABLE]
+unregisterSymbol('theLevelManager')
+getAddressList().getMemoryRecordByID(6).reinterpret()
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>5</ID>
+      <Description>"Call static get_instance method"</Description>
+      <LastState Activated="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+if syntaxcheck then return end
+[ENABLE]
+LaunchMonoDataCollector()
+local m = mono_findMethod('','LevelManager','get_instance')
+local r=mono_invoke_method('', m, 0, {})
+registerSymbol('theLevelManager', r, true)
+getAddressList().getMemoryRecordByID(6).reinterpret()
+
+[DISABLE]
+unregisterSymbol('theLevelManager')
+getAddressList().getMemoryRecordByID(6).reinterpret()
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>6</ID>
+      <Description>"theLevelManager"</Description>
+      <LastState Value="0C33B508" RealAddress="0C447ED8"/>
+      <ShowAsHex>1</ShowAsHex>
+      <VariableType>4 Bytes</VariableType>
+      <Address>theLevelManager</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>7</ID>
+          <Description>"Days"</Description>
+          <LastState Value="50" RealAddress="0C447F00"/>
+          <VariableType>4 Bytes</VariableType>
+          <Address>+28</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>8</ID>
+          <Description>"Gold"</Description>
+          <LastState Value="200" RealAddress="0C447F2C"/>
+          <VariableType>4 Bytes</VariableType>
+          <Address>+54</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>9</ID>
+          <Description>"Has Key"</Description>
+          <LastState Value="0" RealAddress="0C447F48"/>
+          <VariableType>Byte</VariableType>
+          <Address>+70</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>10</ID>
+          <Description>"Has Second Key (shovel?)"</Description>
+          <LastState Value="0" RealAddress="0C447F49"/>
+          <VariableType>Byte</VariableType>
+          <Address>+71</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <Structures StructVersion="2">
+    <Structure Name="LevelManager" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+      <Elements>
+        <Element Offset="12" Vartype="Pointer" Bytesize="4" Description="m_AudioSource_Music1" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="16" Vartype="Pointer" Bytesize="4" Description="m_AudioSource_Music2" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="20" Vartype="Pointer" Bytesize="4" Description="m_AudioSource_Ambience" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="24" Vartype="Pointer" Bytesize="4" Description="m_AudioSource_Click" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="28" Vartype="Pointer" Bytesize="4" Description="m_DistanceToDayRatioPerPlaythrough" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="32" Vartype="Pointer" Bytesize="4" Description="m_CurrentlyTargetedLocation" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="36" Vartype="Pointer" Bytesize="4" Description="m_BoatNavigator" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="40" Vartype="4 Bytes" Bytesize="4" Description="m_CurrentDaysRemaining" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="44" Vartype="4 Bytes" Bytesize="4" Description="m_StandardIslandCostToSearchMin" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="48" Vartype="4 Bytes" Bytesize="4" Description="m_StandardIslandCostToSearchMax" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="52" Vartype="Float" Bytesize="4" Description="m_CameraPosInitial" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="56" Vartype="Float" Bytesize="4" RLECount="2" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="64" Vartype="Float" Bytesize="4" Description="m_CameraRotInitial" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="68" Vartype="Float" Bytesize="4" RLECount="3" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="80" Vartype="4 Bytes" Bytesize="4" Description="m_StartingGold" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="84" Vartype="4 Bytes" Bytesize="4" Description="m_CurrentGold" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="88" Vartype="Byte" Bytesize="1" Description="m_DebugIgoreFailFromTime" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="92" Vartype="Float" Bytesize="4" Description="m_CamZoomDefault" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="96" Vartype="Float" Bytesize="4" Description="m_CamZoomLandingAtIsland" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="100" Vartype="Float" Bytesize="4" Description="m_CamMoveInZFactor" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="104" Vartype="4 Bytes" Bytesize="4" Description="m_MaxPlaythroughsTillFail" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="108" Vartype="4 Bytes" Bytesize="4" Description="m_InitialDays" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="112" Vartype="Byte" Bytesize="1" Description="m_HasKey" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="113" Vartype="Byte" Bytesize="1" Description="m_HasSecondKey" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="116" Vartype="4 Bytes" Bytesize="4" Description="m_TreasureState" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="120" Vartype="4 Bytes" Bytesize="4" Description="&lt;m_GameState&gt;k__BackingField" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="124" Vartype="4 Bytes" Bytesize="4" Description="&lt;m_PlaythroughNum&gt;k__BackingField" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="128" Vartype="Float" Bytesize="4" Description="&lt;m_DistanceToDayRatio&gt;k__BackingField" DisplayMethod="Unsigned Integer"/>
+      </Elements>
+    </Structure>
+  </Structures>
+  <Comments>example game: https://edkay.itch.io/a-pirates-end</Comments>
+</CheatTable>

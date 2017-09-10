@@ -1,0 +1,15 @@
+disableInfo = {
+    allocs = {
+        name1 = {
+            address = ...,
+            size = ...,
+            prefered = ..., -- can be unset/nil
+        },
+        name2 ...
+    },
+    registersymbols = {
+        name1, name2, ...
+    }
+}
+
+https://github.com/cheat-engine/cheat-engine/blob/7ee6e309277f37b4cedb7afd8c2c8755d8b3d630/Cheat%20Engine/LuaHandler.pas#L2356-L2386
