@@ -7,54 +7,9 @@
     <CheatEntry>
       <ID>2</ID>
       <Description>"Step 2"</Description>
-      <LastState Value="8" RealAddress="01733CB8"/>
+      <LastState Value="233" RealAddress="01733CB8"/>
       <VariableType>4 Bytes</VariableType>
       <Address>["Tutorial-i386.exe"+1FD5D0]+480</Address>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>3</ID>
-      <Description>"Set step 2 to editbox value"</Description>
-      <LastState/>
-      <VariableType>Auto Assembler Script</VariableType>
-      <AssemblerScript>[ENABLE]
-["Tutorial-i386.exe"+1FD5D0]+480:
-{$lua}
-  -- make sure trainer is visible for user to set timer
-  if not CETrainer.visible then CETrainer.show() end
-
-  -- create timer to autodisable script CE 6.7+
-  if memrec then
-    tmr = createTimer()
-    tmr.OnTimer = function(timer)
-      memrec.Active = false
-      timer.destroy()
-    end
-    tmr.Interval = 100
-  end
-
-  -- get and parse value
-  value = tonumber(CETrainer.CEEdit1.Text) -- defaults to base 10
-
-  -- return aa script to set value, because why not
-  if value then
-    return "dd #" .. value
-  else
-    -- store original color if we haven't done so before
-    if not ogcolor then ogcolor = CETrainer.CEEdit1.Color end
-    -- set editbox to be red
-    CETrainer.CEEdit1.Color = 0x0000FF
-    -- create timer to reset color
-    tmr = createTimer()
-    tmr.OnTimer = function(timer)
-      CETrainer.CEEdit1.Color = ogcolor
-      timer.destroy()
-    end
-    tmr.Interval = 1000
-  end
-
-[DISABLE]
-
-</AssemblerScript>
     </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
