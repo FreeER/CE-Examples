@@ -1,0 +1,9 @@
+https://imgur.com/a/ohC24
+
+
+DB - Today at 3:44 AM
+@rog9001 hack CE and find the address of ProcessHandler and the field fSystemArchitecture.  Change that to 1 and CE will disassemble it into ARM
+or get the ce sourcecode and set that manually(edited)
+or get binutils for arm and attach it to ce using the binutils interface (needs the github build)
+DB Phone - Today at 3:48 AM
+or www.onlinedisassembler.com
