@@ -5,14 +5,32 @@
   </Files>
   <CheatEntries/>
   <UserdefinedSymbols/>
-  <LuaScript>local img=createImage(MainForm.Panel4)
+  <LuaScript>if MainForm.Panel4.fake_label then MainForm.Panel4.fake_label.destroy() end
+if MainForm.Panel4.fake_img then MainForm.Panel4.fake_img.destroy() end
+
+local label = createLabel(MainForm.Panel4)
+label.name = 'fake_label'
+label.Caption = 'Not signed by: '
+local img=createImage(MainForm.Panel4)
+img.name = 'fake_img'
+img.Width = 32
+img.Height = 32
+
 local picture = findTableFile('logo.ico')
 if not picture then
   img.Picture=MainForm.Logo.Picture
 else
   img.Picture.loadFromStream(picture.Stream,'ico')
 end
-img.AnchorSideLeft.Control=MainForm.Panel4
-img.AnchorSideLeft.Side=asrCenter
+
+label.AnchorSideLeft.Control=MainForm.Panel4
+label.AnchorSideLeft.Side=asrCenter
+label.AnchorSideTop.Control=MainForm.Panel4
+label.AnchorSideTop.Side=asrCenter
+
+img.AnchorSideLeft.Control=label
+img.AnchorSideLeft.Side=asrRight
+img.AnchorSideTop.Control=label
+img.AnchorSideTop.Side=asrCenter
 </LuaScript>
 </CheatTable>
