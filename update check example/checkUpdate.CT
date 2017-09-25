@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <Files>
+    <real_table.CT Encoding="Ascii85">;tkSGu)7Ym%}2;zEh@5.($CrB*H6[0NX/+mPsz,nw@b?FNz:7ZvbW;qvT?ExO*LpXOv+]B05e[l)lhf=!2*40-9}0gK(1*[Hc%BMMVYC@]VgVe.=$y**HI-.l.FzTr2HJPgpEGJTp$,!</real_table.CT>
+  </Files>
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"Check Unmodified"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+function doUpdateCheck()
+  -- download latest
+  --local url = "https://raw.githubusercontent.com/FreeER/CE-Examples/master/update check examples/empty_table.CT"
+  local url = 'https://www.dropbox.com/s/8kb5u1m8ih5ixmm/empty_table.CT?dl=1'
+  local http = getInternet()
+  local latestFile = http.getURL(url)
+  if latestFile == nil then error('failed to check latest version') end
+  -- latestFile = CT/xml file contents, assuming it worked :)
+
+  -- calculate hash
+  local hash = stringToMD5String(latestFile)
+
+  -- calculate local hash
+  -- original test/example was based on Sn34kyMofo/Stephen Chapmen's PNGExtractor turned into a lua extension
+  --local hashLocal = md5file(getCheatEngineDir() .. 'autorun\\PNGExtractor.lua')
+
+  local tableLocal = findTableFile('real_table.CT')
+  local ss = createStringStream()
+  ss.copyFrom(tableLocal.Stream,0)
+  local hashLocal = stringToMD5String(ss.DataString)
+  --local hashLocal = md5memory(tableLocal.Stream.Memory, tableLocal.Stream.Size)
+
+  -- if ^ doesn't work use stringstream and md5 the string like above.
+
+  if hash ~= hashLocal then
+      print('Table is out of date!')
+      local response = inputQuery("Update available", "download new version?", 'yes')
+      if not response or response ~= 'yes' then
+          print('If you prefer to do it manually simply visit: ')
+          print(url)
+      else
+          shellExecute(url) -- lazy method, since we already have the file contents as latestFile
+      end
+  else
+      print("You're up to date!")
+  end
+end
+[ENABLE]
+if not syntaxcheck then doUpdateCheck() end
+
+[DISABLE]
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>4</ID>
+      <Description>"Check Modified"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+function doUpdateCheck()
+  -- download latest
+  --local url = "https://raw.githubusercontent.com/FreeER/CE-Examples/master/update check examples/modified_table.CT"
+  local url = 'https://www.dropbox.com/s/yvdlary58knv6sp/modified_table.CT?dl=1'
+  local http = getInternet()
+  local latestFile = http.getURL(url)
+  if latestFile == nil then error('failed to check latest version') end
+  -- latestFile = CT/xml file contents, assuming it worked :)
+
+  -- calculate hash
+  local hash = stringToMD5String(latestFile)
+
+  -- calculate local hash
+  -- original test/example was based on Sn34kyMofo/Stephen Chapmen's PNGExtractor turned into a lua extension
+  --local hashLocal = md5file(getCheatEngineDir() .. 'autorun\\PNGExtractor.lua')
+
+  local tableLocal = findTableFile('real_table.CT')
+  local ss = createStringStream()
+  ss.copyFrom(tableLocal.Stream,0)
+  local hashLocal = stringToMD5String(ss.DataString)
+
+  if hash ~= hashLocal then
+      print('Table is out of date!')
+      local response = inputQuery("Update available", "download new version?", 'yes')
+      if not response or response ~= 'yes' then
+          print('If you prefer to do it manually simply visit: ')
+          print(url)
+      else
+          shellExecute(url) -- lazy method, since we already have the file contents as latestFile
+      end
+  end
+end
+[ENABLE]
+if not syntaxcheck then doUpdateCheck() end
+
+[DISABLE]
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>5</ID>
+      <Description>"Check Modified - replace real_table"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+function doUpdateCheck()
+  -- download latest
+  --local url = "https://raw.githubusercontent.com/FreeER/CE-Examples/master/update check examples/modified_table.CT"
+  local url = 'https://www.dropbox.com/s/yvdlary58knv6sp/modified_table.CT?dl=1'
+  local http = getInternet()
+  local latestFile = http.getURL(url)
+  if latestFile == nil then error('failed to check latest version') end
+  -- latestFile = CT/xml file contents, assuming it worked :)
+
+  -- calculate hash
+  local hash = stringToMD5String(latestFile)
+
+  -- calculate local hash
+  -- original test/example was based on Sn34kyMofo/Stephen Chapmen's PNGExtractor turned into a lua extension
+  --local hashLocal = md5file(getCheatEngineDir() .. 'autorun\\PNGExtractor.lua')
+
+  local tableLocal = findTableFile('real_table.CT')
+  local ss = createStringStream()
+  ss.copyFrom(tableLocal.Stream,0)
+  local hashLocal = stringToMD5String(ss.DataString)
+
+  if hash ~= hashLocal then
+      print('Table is out of date!')
+      local response = inputQuery("Update available", "download new version?", 'yes')
+      if not response or response ~= 'yes' then
+          print('If you prefer to do it manually simply visit: ')
+          print(url)
+      else
+          tableLocal.delete()
+          tableLocal = createTableFile('real_table.CT')
+          local ss = createStringStream(latestFile)
+          tableLocal.Stream.copyFrom(ss,0)
+          ss.destroy()
+          -- hm, CE doesn't seem to provide this outside of a trainer.
+          local path = TrainerOrigin .. 'checkUpdateNew.CT' -- not sure if there's a reliable way to get the table name
+          saveTable(path, false --[[do not protect, not a CETRAINER anyways]])
+      end
+  end
+end
+[ENABLE]
+if not syntaxcheck then doUpdateCheck() end
+
+[DISABLE]
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>3</ID>
+      <Description>"Load real table"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+[ENABLE]
+if syntaxcheck then return end
+
+-- hm, this doesn't seem to be done even with no merge... not sure why.
+local al = getAddressList()
+for i=0,al.Count-1 do
+  al[0].destroy()
+end
+loadTable(findTableFile('real_table.CT').Stream)
+
+[DISABLE]
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>6</ID>
+      <Description>"Load real table in new CE"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+[ENABLE]
+local tf = findTableFile('real_table.CT')
+local path = TrainerOrigin .. os.tmpname() .. '.CT'
+if syntaxcheck then return end
+tf.saveToFile(path)
+shellExecute('Cheat Engine.exe', ('"%s"'):format(path), getCheatEngineDir())
+
+[DISABLE]
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
