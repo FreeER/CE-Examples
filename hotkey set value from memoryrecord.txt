@@ -1,0 +1,7 @@
+http://forum.cheatengine.org/viewtopic.php?p=5732164#5732164
+
+Dark Byte: you can use a "set value" hotkey, and give as value 
+
+(memoryRecordDescriptionWithTheAddress) 
+
+(it can even be an AOB of 12 bytes if you like, and have the origin, an AOB of 12 bytes as well) 
