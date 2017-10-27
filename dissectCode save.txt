@@ -1,0 +1,12 @@
+https://imgur.com/a/JOK95
+
+F0 - Today at 12:38 AM
+request: Save the results of a dissected code in a file where we can load it up again
+reason: some games being >30+ or more MB in total of pure processor code can take a really long time, for lower tier PCs this could take up to 30 minutes just for CE to Dissect the code. Once CE crashes or closes down, the dissected code will no longer exist. Making it a nuisence to Dissect the code again as the person have to wait for another 30 minutes(edited)
+👍1
+Extremely useful for packed games or games with a fixed address table
+NEW MESSAGES
+DB - Today at 6:04 PM
+@F0
+getDissectCode().saveToFile(filename)
+getDissectCode().loadFromFile(filename)
