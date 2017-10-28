@@ -10,3 +10,8 @@ DB - Today at 6:04 PM
 @F0
 getDissectCode().saveToFile(filename)
 getDissectCode().loadFromFile(filename)
+
+FreeER - Today at 8:05 PM
+that sounds potentially useful, but I probably won't remember by the time I need it lol, so if anyone is interested here's an extension that essentially let's you do it from the GUI
+https://www.dropbox.com/s/6rqd06ywpzgsnpn/SaveDissectCode.lua?dl=0
+oh, and if you don't want it in a "FreeER's Extensions" menu item you can change the local useGroupMenu = true line to false and just get a "Save Dissect Code" item instead, or if you want to change what menu it uses then change local extGroupMenuCaption = 'FreeER\'s Extensions' to use whatever name you like.
