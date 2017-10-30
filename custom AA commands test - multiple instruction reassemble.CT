@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>229</ID>
+      <Description>"MultiInstruction Reassemble"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+local AACommandName = 'MYREASSEMBLE'
+unregisterAutoAssemblerCommand(AACommandName)
+registerAutoAssemblerCommand(AACommandName, function(params, syntaxcheck)
+  local comma = params:find(',')
+  if not comma then return nil, AACommandName .. ' requires the address and the number of instructions' end
+  local address = params:sub(0,comma-1)
+  address = getAddressSafe(address)
+  if not address then return nil, 'invalid address to ' .. AACommandName end
+  local numInstructionsStr = params:sub(comma+1)
+  local numInstructions = tonumber(numInstructionsStr)
+  if not numInstructions then return nil, AACommandName .. ' requires the second paramter to be the number of instructions' end
+  local res = ''
+  local btToStr = function(table)
+    local res = ''
+    for k,v in ipairs(table) do
+      res = res .. ('%X'):format(v) .. ' '
+    end
+    return res
+  end
+  for i=1, numInstructions do
+    local size = getInstructionSize(address)
+    res = res .. 'db ' .. btToStr(readBytes(address, size, true))
+    res = res .. '\r\n'
+    address = address + size
+  end
+  return res
+end)
+{$asm}
+
+[ENABLE]
+{$lua}
+autoAssemble[[
+aobscanmodule(INJECT,Tutorial-i386.exe,89 83 80 04 00 00 8D 55 D4 E8 12)
+registersymbol(INJECT)
+]]
+{$asm}
+alloc(newmem,$1000)
+
+label(code)
+label(return)
+
+newmem:
+code:
+MYREASSEMBLE(INJECT,2)
+//  mov [ebx+00000480],eax
+  jmp return
+
+INJECT:
+  jmp newmem
+  nop
+return:
+
+[DISABLE]
+{$lua}
+-- registered during syntaxcheck, so needs to be unregistered too
+if syntaxcheck then unregisterSymbol('INJECT') end
+{$asm}
+INJECT:
+  db 89 83 80 04 00 00
+dealloc(newmem)
+unregisterSymbol(INJECT)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "Tutorial-i386.exe"+23B80
+
+"Tutorial-i386.exe"+23B5C: E8 5F 99 FE FF        -  call Tutorial-i386.exe+D4C0
+"Tutorial-i386.exe"+23B61: E8 6A B4 FE FF        -  call Tutorial-i386.exe+EFD0
+"Tutorial-i386.exe"+23B66: 50                    -  push eax
+"Tutorial-i386.exe"+23B67: 85 C0                 -  test eax,eax
+"Tutorial-i386.exe"+23B69: 75 65                 -  jne Tutorial-i386.exe+23BD0
+"Tutorial-i386.exe"+23B6B: B8 05 00 00 00        -  mov eax,00000005
+"Tutorial-i386.exe"+23B70: E8 8B AB FE FF        -  call Tutorial-i386.exe+E700
+"Tutorial-i386.exe"+23B75: 8D 50 01              -  lea edx,[eax+01]
+"Tutorial-i386.exe"+23B78: 8B 83 80 04 00 00     -  mov eax,[ebx+00000480]
+"Tutorial-i386.exe"+23B7E: 29 D0                 -  sub eax,edx
+// ---------- INJECTING HERE ----------
+"Tutorial-i386.exe"+23B80: 89 83 80 04 00 00     -  mov [ebx+00000480],eax
+// ---------- DONE INJECTING  ----------
+"Tutorial-i386.exe"+23B86: 8D 55 D4              -  lea edx,[ebp-2C]
+"Tutorial-i386.exe"+23B89: E8 12 62 01 00        -  call Tutorial-i386.exe+39DA0
+"Tutorial-i386.exe"+23B8E: 8B 55 D4              -  mov edx,[ebp-2C]
+"Tutorial-i386.exe"+23B91: 8B 83 6C 04 00 00     -  mov eax,[ebx+0000046C]
+"Tutorial-i386.exe"+23B97: E8 24 00 07 00        -  call Tutorial-i386.exe+93BC0
+"Tutorial-i386.exe"+23B9C: 83 BB 80 04 00 00 00  -  cmp dword ptr [ebx+00000480],00
+"Tutorial-i386.exe"+23BA3: 7D 2B                 -  jnl Tutorial-i386.exe+23BD0
+"Tutorial-i386.exe"+23BA5: A1 14 02 55 00        -  mov eax,[Tutorial-i386.exe+150214]
+"Tutorial-i386.exe"+23BAA: E8 41 56 0F 00        -  call Tutorial-i386.exe+1191F0
+"Tutorial-i386.exe"+23BAF: B8 64 00 00 00        -  mov eax,00000064
+}
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
