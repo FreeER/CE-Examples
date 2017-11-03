@@ -1,6 +1,12 @@
 -- http://forum.cheatengine.org/viewtopic.php?p=5732108#5732108
 --[[
-It'll ask for a file to save the memory to, the address of the memory to copy and the size. Then you change the save variable to false and run it again and it'll ask you to reopen the file and it'll print the address it allocated and copied the values to. Note that the values are in hex (you can use symbols for the address or pretty much whatever else CE allows since it's using a CE function to parse it) and sizes are in hex. Note that the size of the struct is the last offset + the size of the last element, so if the last element is a pointer at offset 28 then the size is either 2C for 32 bit or 30 for 64 bit (you can just use 30 and copy an extra 4 bytes in the case of x86). 
+It'll ask for a file to save the memory to, the address of the memory to copy and the size.
+Then you change the save variable to false and run it again and it'll ask you to reopen the file
+    and it'll print the address it allocated and copied the values to.
+Note that the values are in hex (you can use symbols for the address or pretty much whatever else CE allows since it's using
+    a CE function to parse it) and sizes are in hex.
+Note that the size of the struct is the last offset + the size of the last element, so if the last element is a pointer at
+    offset 28 then the size is either 2C for 32 bit or 30 for 64 bit (you can just use 30 and copy an extra 4 bytes in the case of x86). 
 
 Once you've reloaded the values you can use the structure dissect filter extension (CEEnhancer) to filter out what's changed (or what hasn't).
 ]]

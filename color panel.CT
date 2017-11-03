@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <Forms>
+    <UDF1 Class="TCEForm" Encoding="Ascii85">jnGXF!9W/s?ptAen$(^C#w}CH3{rzyG9s2k2NSe1W=@gZB#z?GZa{p?qOs]mN(fjQo,_/1o=9z$*@$U?vnCz4ZVlwp.L6VTrCO}G-T-.HM}CF5$}S9lk@(QZqrxB][eHi/GBBUoN%lJiJHkB=$Sq,BeTElJ8(8:IU,?J!Fkv/q@O5$YrU2kX1lMA+X$wupu_g_vq#7gT1ff0-#S!mdd+MMnEec/Xq@Mp)m42yu7K*}+[Frn2g}Alo]bXgjvRGF1*(l</UDF1>
+  </Forms>
+  <CheatEntries/>
+  <UserdefinedSymbols/>
+  <LuaScript>-- http://docs.embarcadero.com/products/rad_studio/delphiAndcpp2009/HelpUpdate2/EN/html/delphivclwin32/Graphics_TColor.html
+local clDefault = 0x20000000
+
+local OnTrackBarChange = function(sender)
+  local R,G,B,A = UDF1.R.Position, UDF1.G.Position, UDF1.B.Position, UDF1.A.Position
+  local color = A &lt;&lt; 24 | B &lt;&lt; 16 | G &lt;&lt; 8 | R
+  UDF1.C.Color = color == 0 and clDefault or color
+end
+UDF1.R.OnChange = OnTrackBarChange
+UDF1.G.OnChange = OnTrackBarChange
+UDF1.B.OnChange = OnTrackBarChange
+UDF1.A.OnChange = OnTrackBarChange
+
+UDF1.Show()
+</LuaScript>
+</CheatTable>
