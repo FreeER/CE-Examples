@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"Step 9 - 31337157"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+if syntaxcheck then return end
+[ENABLE]
+local breakpointAOB = 'D9 43 04 DE D9 DF E0 9E 7A 11'
+-- global table to keep global namespace neat
+_G[breakpointAOB] = _G[breakpointAOB] or {}
+local g =_G[breakpointAOB] -- nice name using local variable
+g.print = false -- boolean for testing (prints table rather than adding)
+g.printed = 0 -- counter for how often the results are printed
+g.printedMod = 5 -- controls how often the results are printed
+-- table to remember accessed addresses
+g.accessedAddresses = {} --g.accessedAddresses or {}
+
+if not g.breakpointAddress then
+  local res = AOBScan(breakpointAOB)
+  assert(res, 'Failed to find code!')
+  g.breakpointAddress = res[0]
+  res.destroy() -- free string list result from AOBScan
+end
+
+if not debug_isDebugging() then debugProcess() end
+
+-- remove existing breakpoint if leftover from testing
+debug_removeBreakpoint(g.breakpointAddress)
+local newmr = getAddressList().createMemoryRecord
+debug_setBreakpoint(g.breakpointAddress, 1, bptExecute, function()
+  local addrAccessed = EBX+4
+  if g.accessedAddresses[addrAccessed] then
+    g.accessedAddresses[addrAccessed] = g.accessedAddresses[addrAccessed]+1
+  else
+    g.accessedAddresses[addrAccessed] = 1
+    local mr = newmr()
+    mr.Address = ('%x'):format(addrAccessed) -- needs to be hex string
+    mr.DontSave = true -- most likely these are not static so don't save them with the table
+  end
+
+  if g.print and g.printed % g.printedMod == 0 then
+    print('-------------------------')
+    for k,v in pairs(g.accessedAddresses) do
+      print(('%x'):format(k), v, readFloat(k))
+    end
+  end
+  g.printed = g.printed + 1
+
+  debug_continueFromBreakpoint(co_run)
+  return 0
+end)
+
+if false then debug_removeBreakpoint(g.breakpointAddress) end
+return g
+
+[DISABLE]
+local breakpointAOB = 'D9 43 04 DE D9 DF E0 9E 7A 11'
+debug_removeBreakpoint(_G[breakpointAOB].breakpointAddress)
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <Comments>Info about this table:
+</Comments>
+</CheatTable>
