@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"Example (creates custom type and memory record with that type)"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+[ENABLE]
+if syntaxcheck then return end -- prevent running lua code on save/edit
+-- register new example custom type via lua that is just a *10
+-- eg. so when 100 is stored in memory the custom type reads 10
+local ct = getCustomType('*10')
+if not ct then -- create the custom type only if the name does not already exist
+  ct = registerCustomTypeLua('*10', -- name
+    4, -- size in bytes
+    function(...) -- from bytes
+      local bytes = {...}
+      return byteTableToDword(bytes)/10
+    end,
+    function(num) -- to bytes
+      print(num*10)
+      return unpack(DwordToByteTable(num*10))
+    end,
+    false) -- not a float
+else
+  -- notify used during creation to avoid forgetting why it doesn't change lol
+  --print('not creating type, already exists')
+end
+
+-- create a new memory record for step 2 of the i386 tutorial with that custom type
+if not mr then -- only create memory records if they don't already exist
+  local al = getAddressList()
+  mr = al.createMemoryRecord() -- global mr
+  mr.Address = '[Tutorial-i386.exe+1FD5D0]+480'
+  mr.Description = 'Step 2'
+  mr.Type = vtCustom
+  mr.CustomTypeName = ct.name
+  mr.DontSave = true
+
+  -- and with regular 4 byte type (default)
+  local mr2 = al.createMemoryRecord()
+  mr2.Address = '[Tutorial-i386.exe+1FD5D0]+480'
+  mr2.Description = 'Step 2 - 4 byte'
+  mr.DontSave = true
+end
+
+-- demo
+print(mr.Value)
+mr.Value = '1000'
+
+-- note ct.byteTableToValue and ct.valueToByteTable exist
+-- the latter seems a bit bugged (at least for custom lua types) in CE6.7 so no demo currently
+
+[DISABLE]
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
