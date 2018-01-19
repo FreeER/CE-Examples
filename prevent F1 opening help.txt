@@ -1,2 +1,2 @@
 run the lua code:
-writeBytesLocal('HtmlHelpA', 0xC3)
+cheatEngineIs64Bit() and writeBytesLocal('HtmlHelpA', 0xC3) or writeBytesLocal('HtmlHelpA', 0xC2, 0x10, 0x00)
