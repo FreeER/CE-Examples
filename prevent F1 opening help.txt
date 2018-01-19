@@ -1,0 +1,2 @@
+run the lua code:
+writeBytesLocal('HtmlHelpA', 0xC3)
