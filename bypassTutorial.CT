@@ -8,7 +8,6 @@
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>[ENABLE]
 globalalloc(bypassThread, $1000)
-luacall(debugProcess())
 
 createThread(bypassThread)
 bypassThread:
@@ -121,5 +120,6 @@ unregisterSymbol(quit)
       <Address>01750000</Address>
     </SymbolEntry>
   </UserdefinedSymbols>
-  <Comments>To use this on another process without reopening the table you'll have to open the symbol table (memory viewer, view-&gt;User Defined Symbols) and delete all of them (there's a context menu to do so)</Comments>
+  <Comments>To use this on another process without reopening the table you'll have to open the symbol table (memory viewer, view-&gt;User Defined Symbols) and delete all of them (there's a context menu to do so)
+</Comments>
 </CheatTable>
