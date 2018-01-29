@@ -7,8 +7,18 @@
       <LastState/>
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>[ENABLE]
-globalalloc(bypassThread, $1000)
+{$lua}
+-- CE does not clear the symbol list when attaching to a new process, so we do it
+onOpenProcess = function(pid)
+  autoAssemble[[
+    unregisterSymbol(bypassThread)
+    unregisterSymbol(info)
+    unregisterSymbol(quit)
+  ]]
+end
+{$asm}
 
+globalalloc(bypassThread, $1000)
 createThread(bypassThread)
 bypassThread:
   cmp [quit], 0
@@ -75,10 +85,13 @@ info:
 registerSymbol(info)
 registerSymbol(quit)
 [DISABLE]
-quit:
- dd 1
+{$lua}
+-- if the process is still running then stop the thread by writing 1 to quit
+if readInteger(process) ~= nil then return 'quit:\ndd 1' end
+{$asm}
 unregisterSymbol(info)
 unregisterSymbol(quit)
+unregisterSymbol(bypassThread)
 </AssemblerScript>
       <CheatEntries>
         <CheatEntry>
@@ -90,36 +103,8 @@ unregisterSymbol(quit)
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
-    <CheatEntry>
-      <ID>2</ID>
-      <Description>"Reset (run after process has closed to clear left over registered symbols)"</Description>
-      <LastState/>
-      <VariableType>Auto Assembler Script</VariableType>
-      <AssemblerScript>[ENABLE]
-unregisterSymbol(bypassThread)
-unregisterSymbol(info)
-unregisterSymbol(quit)
-{$lua}
-  local mr = getAddressList().getMemoryRecord(0)
-  if mr.disableWithoutExecute then mr.disableWithoutExecute() end
-{$asm}
-[DISABLE]
-unregisterSymbol(bypassThread)
-unregisterSymbol(info)
-unregisterSymbol(quit)
-{$lua}
-  local mr = getAddressList().getMemoryRecord(0)
-  if mr.disableWithoutExecute then mr.disableWithoutExecute() end
-{$asm}
-</AssemblerScript>
-    </CheatEntry>
   </CheatEntries>
-  <UserdefinedSymbols>
-    <SymbolEntry>
-      <Name>bypassThread</Name>
-      <Address>01750000</Address>
-    </SymbolEntry>
-  </UserdefinedSymbols>
+  <UserdefinedSymbols/>
   <Comments>To use this on another process without reopening the table you'll have to open the symbol table (memory viewer, view-&gt;User Defined Symbols) and delete all of them (there's a context menu to do so)
 </Comments>
 </CheatTable>
