@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CheatTable CheatEngineTableVersion="26">
   <Forms>
-    <CETrainer Class="TTrainerForm" Encoding="Ascii85">osms$,b_G=X_XmHOK}=jK-OIpZMyBEwrU^);R1hhc3F%i$_6jY3PmIFE!rF8P]O5d9HIKNY#}{z8^%pBX1=M3gAob=_AQNb8n_TIS9+Kq%@UUR8%qp,c1PEYuTz6x5Dry[]C#}y$0o(J2E;ERa3x1alj^l2q-iZqty^-ZdP3!ljH^z4MjJa(IWOCgNv3F_8IxXNVfvh:;fuI*kZ*$7iJhCNcz{J5CZRVEv_4MH:S5_5R4dRQD^kv@gKb?u*YiKi,KTZ49]V!Lb{0TmutQiab/DJd5VFhOAepe6v%jBz:.zE-X_2@oqo}.nM)kBixm+k8]bwJjUJ9BrL*[@tz4[%]Pw)hF9M;f!lqRD^Oz)H#RKJ;OFK3myg*JMMduq$0OA0c-T,rGXa1+6uoMb.hb66c[ecyrLW:{_R_5Za]9DgUo9m_T0j6DuO7Y_%sw2!,FdUpTRyL*]tz0JS9--+9=j,68YTfHWU#7sc6:]cApQ,4A6%6iRoRWqS36Y9-l[:?nVn{xHSFZ!YwMg;^iN#gHG5[ZV,mP-)*A(=}V]6G,{I^^RF^^R</CETrainer>
+    <CETrainer Class="TTrainerForm" Encoding="Ascii85">osvy%,b_G=87Vep$#EAo3Urqf1g)34,Ny.Fh,^Pp,GR18D2p(nsw54@2k5Sc$f0[LE)]Ps*sHP)iL$9S*MzxEZ^C{=:Lm)q[pTp=5-2Cq6LQ@ir}ByqmL%Hz*$d+tx:gkC1DT:7OnTP(N?JaxzY%sJ)@T.8v8eAdO1Q2_oGPv;:G/jM5p0*7o^UzOFBC1V!GlZ$ktBq;c=pphK]OR4JOs6xfW)(4W448zLW9tq]cf//Q7X=2j=n[-]!^1Ar9uWYCdC9-uHae/hCB0Z4+2;;ws@rkP[pV-4sCqg(uk2fk(R)Bu?RdycrYJd*x[pc,X]VZmobqBLdYt;fD;lz(lh2yFt?fH9ojk+QFN%H.XVrVjuC7vR6zNXk-nGTeC4Jf1EO)%d;7n(bFatu!8Ek1lwd.QUc_gjlqw2N]E{p$Z=BB+U]?Igu2_FPG61eFXF+l$Qyrz*PO;i]DJ%{^K5u_gy}8.9^z+cj9dE/fJ/0M[)3b6k%rz}3w2msBwW##rC6#I!TlMh_]qX/@U*Wf}T)XlbG}!Mr1(-K,L9{W;I}8;K#_gFZ9C{nSp)Yb+@^n%ZaMbk6nNMeJc6FkhEN*o!:fo.2ByvqTuv3=Cl6mxj#Q$v)DxQA</CETrainer>
   </Forms>
   <CheatEntries>
     <CheatEntry>
@@ -13,7 +13,7 @@
     <CheatEntry>
       <ID>7</ID>
       <Description>"Enemy 1"</Description>
-      <LastState Value="10000" RealAddress="016C836C"/>
+      <LastState Value="2700" RealAddress="019D3704"/>
       <VariableType>Float</VariableType>
       <Address>"Tutorial-i386.exe"+1FD600</Address>
       <Offsets>
@@ -23,7 +23,7 @@
     <CheatEntry>
       <ID>8</ID>
       <Description>"Enemy 2"</Description>
-      <LastState Value="999" RealAddress="016C8370"/>
+      <LastState Value="35" RealAddress="019D3708"/>
       <VariableType>Double</VariableType>
       <Address>"Tutorial-i386.exe"+1FD600</Address>
       <Offsets>
@@ -64,7 +64,7 @@ function CustomProgressBar(pb, value, min, max)
   -- set bar color via lerping ("linear interpolation")
   -- simple red to green doesn't look good ~50% so use yellow to green and red to yellow
   -- https://answers.unity.com/questions/646272/lerp-between-3-colors-based-on-energy-amount.html
-  if percent &lt; 0.5 then
+  if percent &gt; 0.5 then
     pb.Canvas.Brush.Color = makeColor(lerpRGB(255,255,0, 0,255,0, (percent-0.5)*2))
   else
     pb.Canvas.Brush.Color = makeColor(lerpRGB(255,0,0, 255,255,0, percent*2))
