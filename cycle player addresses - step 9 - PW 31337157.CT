@@ -4,26 +4,26 @@
     <CheatEntry>
       <ID>2</ID>
       <Description>"Player Base"</Description>
-      <LastState Value="005AA550" RealAddress="036E9018"/>
+      <LastState Value="005AA550" RealAddress="08500080"/>
       <ShowAsHex>1</ShowAsHex>
       <VariableType>4 Bytes</VariableType>
       <Address>"Tutorial-i386.exe"+1FD670</Address>
       <Offsets>
         <Offset>0</Offset>
-        <Offset>4CC</Offset>
+        <Offset>4D4</Offset>
       </Offsets>
       <CheatEntries>
         <CheatEntry>
           <ID>4</ID>
           <Description>"Health (offsets come from struct created in Dissect Data/Structures)"</Description>
-          <LastState Value="85" RealAddress="036E901C"/>
+          <LastState Value="500" RealAddress="08500084"/>
           <VariableType>Float</VariableType>
           <Address>+PlayerStruct.Health</Address>
         </CheatEntry>
         <CheatEntry>
           <ID>6</ID>
           <Description>"Name"</Description>
-          <LastState RealAddress="036E902D"/>
+          <LastState RealAddress="08500095"/>
           <VariableType>String</VariableType>
           <Length>10</Length>
           <Unicode>0</Unicode>
@@ -36,7 +36,7 @@
     <CheatEntry>
       <ID>7</ID>
       <Description>"Next Player"</Description>
-      <LastState/>
+      <LastState Activated="1"/>
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>// lua code runs before any asm, but this is all lua so :)
 // having it before both sections causes it to run for both
@@ -93,6 +93,44 @@ if mr.Offset[OffsetIndex] &lt; firstPlayerOffset then mr.Offset[OffsetIndex] = l
         </Hotkey>
       </Hotkeys>
     </CheatEntry>
+    <CheatEntry>
+      <ID>9</ID>
+      <Description>"Player Base - example of struct abuse for player specific offsets"</Description>
+      <LastState Value="005AA550" RealAddress="08500080"/>
+      <ShowAsHex>1</ShowAsHex>
+      <VariableType>4 Bytes</VariableType>
+      <Address>"Tutorial-i386.exe"+1FD670</Address>
+      <Offsets>
+        <Offset>0</Offset>
+        <Offset>players.Hal</Offset>
+      </Offsets>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>10</ID>
+          <Description>"Health (offsets come from struct created in Dissect Data/Structures)"</Description>
+          <LastState Value="500" RealAddress="08500084"/>
+          <VariableType>Float</VariableType>
+          <Address>+PlayerStruct.Health</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>11</ID>
+          <Description>"Name"</Description>
+          <LastState RealAddress="08500095"/>
+          <VariableType>String</VariableType>
+          <Length>10</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>+PlayerStruct.Name</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>12</ID>
+      <Description>"31337157"</Description>
+      <LastState Value="" RealAddress="00000000"/>
+      <GroupHeader>1</GroupHeader>
+    </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
   <Structures StructVersion="2">
@@ -108,6 +146,14 @@ if mr.Offset[OffsetIndex] &lt; firstPlayerOffset then mr.Offset[OffsetIndex] = l
         <Element Offset="26" Vartype="Byte" Bytesize="1" RLECount="2" DisplayMethod="Unsigned Integer"/>
         <Element Offset="28" Vartype="4 Bytes" Bytesize="4" RLECount="14" DisplayMethod="Unsigned Integer"/>
         <Element Offset="84" Vartype="Pointer" Bytesize="4" Description="NextTeamPlayer" DisplayMethod="Unsigned Integer"/>
+      </Elements>
+    </Structure>
+    <Structure Name="players" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+      <Elements>
+        <Element Offset="1228" Vartype="4 Bytes" Bytesize="4" Description="Dave" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1232" Vartype="4 Bytes" Bytesize="4" Description="Eric" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1236" Vartype="4 Bytes" Bytesize="4" Description="Hal" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="1240" Vartype="4 Bytes" Bytesize="4" Description="Kitt" DisplayMethod="Unsigned Integer"/>
       </Elements>
     </Structure>
   </Structures>
