@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <Forms>
+    <UDF1 Class="TCEForm" Encoding="Ascii85">J(#^f!Y}lVLyApXzz0v?2@c+;33Onl0,KpDI+_sFF)jBQgB-vMcolEqHGKEQ3s[oVU-sYk=fmwmg-_iiZb)5#nRT1=!!WyT:VArHcNC6:T1yDtTR}yB!6(,SR3+sZ2NTM-psWdNeV1w[44l:Sray}khHC2tA$6jo9,P%IF$MQ81MW!VA:P[,?aRZ!CpMNesR6-PCk_J0.NCyR7w%?)K%YwPm.lmEr*:@;$LWHNicY/1jQBUMyD8s??G^;mRmrcZHQs8G*SJ12r6gpv(D5JHo3r.jt]!]r;Fdz)74(jtgzqzO%B,1WJVByl(RzBH)G+1s!ONM@hd5zNXSJ;#@d#^/-GLogkWs.)XRZ[uqlgL3fIGl)T$Q.nYmgXK?dp</UDF1>
+  </Forms>
+  <Files>
+    <test.nfo Encoding="Ascii85">/)NHhgD=/:GkfY!?WAZV+.pb*p1fy6Ri#Gi#^mDNf4IGu/cv=*F-eqQ@%X)^;/2i][mQ8M(1QH%[WEz?@zhaXN?.D3c4t_rDHI0tTxUp%c6S15)+1!r@rS6mw@+1408q66uR{;^EkJzw/QRB_i-mK-.P=qt1wdRDEcg(6w/N_KSh$IWvxvJZT0c$F!}+D/XdeiqfdYv4VU%Tig(mvb1cdUy$-@brBt7bLfCzI8v]JveE7OoedzKSZ?[G:E=83nI3Lv}Hw)_rS5*Cf,Y+=xkh=6mJ%(H=WYtmYPGk*j.Z(7M30JfBJ+8pr%!GSy]6C8=xQTVcJ1Y(8-rhqIt4GgtZSbx0o#!720IX?Z5C8WOqOqC,rMWskEeFZ:]#[m;$3U;X#Nn5eJx46*!tPp6Z/8z^Wj2p/Y2rh1K^}u7[s^KdT[xoe[HJI1$Po;0v5Wf</test.nfo>
+  </Files>
+  <CheatEntries/>
+  <UserdefinedSymbols/>
+  <LuaScript>UDF1.CEMemo1.Lines.clear()
+UDF1.Show()
+filename = 'test.nfo'
+
+-- full demo of different ways to load a file, read it as text and display it
+-- in a memo or whatever else you might have that takes a string
+local cepath = getCheatEngineDir()
+local isTrainer = cepath:find('cetrainers') ~= nil -- true if trainer, false otherwise
+local filepath
+if isTrainer then
+  filepath = cepath -- cepath is path of extracted files
+elseif TrainerOrigin then
+  -- cepath is program files, don't want to save there lol
+  -- TrainerOrigin is folder generated exe is in.
+  -- also set when CE is launched from a cheat table
+  -- (but not when ce is launched and then a CT is opened)
+  filepath = TrainerOrigin
+else -- no info available, use os.getenv to get enviornment var TEMP
+  filepath = os.getenv('TEMP') .. '\\' -- TEMP does not have \ like the other two, add it
+end
+
+function file_isReadable(name)
+   local f = io.open(name,"r")
+   if f then io.close(f) return true else return false end
+end
+-- best we got with just lua, CE offers getFileList but, not sure we need it.
+-- after all if we can't read the file (as admin) there's not much we could do
+function file_exists(name) return file_isReadable(name) end
+
+local success = true
+local fullpath = filepath .. filename
+-- if the file already exists (added to trainer at generation or next to exe/CT) just load from it
+-- otherwise save to filepath (TEMP dir) and read from that
+if file_exists(fullpath) then
+  UDF1.CEMemo1.Lines.loadFromFile(fullpath)
+else
+  local errorMessage = 'Failed to find or generate nfo file!'
+  local nfo = findTableFile(filename)
+  if not nfo then
+    UDF1.CEMemo1.Lines.Text = errorMessage
+    success = false
+  else
+    -- just in case the file existed but wasn't readable try to use a unique name
+    fullpath = filepath .. os.tmpname()
+    nfo.saveToFile(fullpath)
+    nfo = io.open(fullpath)
+    local contents
+    if nfo then
+      contents = nfo:read('*all') -- could also use loadFromFile but... :)
+      nfo:close()
+      os.remove(fullpath)
+    else
+      contents = errorMessage
+      success = false
+      -- could add some way to try and parse the tablefile's Stream as a txt file but... too lazy
+    end
+    UDF1.CEMemo1.Lines.Text = contents
+  end
+end
+--return success -- don't do unless in a function, prevents rest of code otherwise lol
+
+--could also open in notepad with
+--shellExecute('notepad', fullpath)
+</LuaScript>
+</CheatTable>
