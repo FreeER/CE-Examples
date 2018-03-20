@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"alloc testing memory"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+openProcess(getCheatEngineProcessID())
+{$asm}
+globalalloc(testing,16)
+
+[DISABLE]
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>1</ID>
+          <Description>"Testing"</Description>
+          <DropDownList DisplayValueAsItem="1">0:Set a value!
+1:Something
+10:Is that 10 or 16? Ha better check if it's set to hex!
+100:Now there's a common one
+1000:How about that?
+1337:Big hacker now aren't 'cha :)
+</DropDownList>
+          <LastState Value="0" RealAddress="0F2B0000"/>
+          <VariableType>4 Bytes</VariableType>
+          <Address>testing</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>3</ID>
+      <Description>"Print DropDownList"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$lua}
+local mr = getAddressList().getMemoryRecordByID(1)
+local ddl = mr.DropDownList
+
+print('') -- blank line
+for i=0,ddl.Count-1 do
+  print(ddl[i])
+end
+
+print('') -- blank line
+
+for i=0,ddl.Count-1 do
+  local valueStr, msgStr = ddl[i]:match('(.-):(.+)')
+  -- ^ first must be nongreedy for eg '134:smile :)', second must be greedy, or (.-)$
+  print(valueStr, '\t', msgStr)
+end
+
+--[[
+In the next version of CE it may be possible that
+mr.DropDownValue[i] and mr.DropDownDescription[i]
+will exist but they do not currently
+]]
+
+[DISABLE]
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>4</ID>
+      <Description>"Add randomized item to DDL"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+local mr = getAddressList().getMemoryRecordByID(1)
+local ddl = mr.DropDownList
+
+function randomTrueFalse() return math.random() &lt; 0.5 end
+
+function randomString(length)
+  local length = math.floor(length)
+  local s = {}
+  for i=0, length do
+    local a = ('A'):byte(1)
+    local z = ('Z'):byte(1)
+    local randChar = math.random(a,z)
+    local changeCase = randomTrueFalse() and 32 or 0
+    s[#s+1] = string.char(randChar ~ changeCase)
+  end
+  return table.concat(s,'')
+end
+
+--ddl.clear() -- removes all
+local newItem = ('%d:%s'):format(math.random(1000,1000000), randomString(math.random(5,21)))
+ddl.add(newItem)
+
+[DISABLE]
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols>
+    <SymbolEntry>
+      <Name>testing</Name>
+      <Address>0F2B0000</Address>
+    </SymbolEntry>
+  </UserdefinedSymbols>
+</CheatTable>
