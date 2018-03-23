@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"hotkey a"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>0</Address>
+      <Hotkeys>
+        <Hotkey>
+          <Action>Toggle Activation</Action>
+          <Keys>
+            <Key>65</Key>
+            <Key>66</Key>
+          </Keys>
+          <ID>0</ID>
+        </Hotkey>
+      </Hotkeys>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"No a"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>0</Address>
+      <Hotkeys>
+        <Hotkey>
+          <Action>Toggle Activation</Action>
+          <Keys>
+            <Key>66</Key>
+            <Key>86</Key>
+          </Keys>
+          <ID>0</ID>
+        </Hotkey>
+      </Hotkeys>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>5</ID>
+      <Description>"No b or a"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>0</Address>
+      <Hotkeys>
+        <Hotkey>
+          <Action>Toggle Activation</Action>
+          <Keys>
+            <Key>69</Key>
+            <Key>68</Key>
+            <Key>74</Key>
+            <Key>72</Key>
+          </Keys>
+          <ID>0</ID>
+        </Hotkey>
+      </Hotkeys>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>2</ID>
+      <Description>"List Records with hotkey 'b'"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+[ENABLE]
+-- unchangd belongs in Table Script / autorun but I don't like making people
+-- get the prompt to run the lua code so... here's duplicated here.
+function findScriptsWithHotkey(...)
+  -- logging/testing functions
+  local serpent = serpent or {block=function(t)return tostring(t)end}
+  local function log(...) if(false) then print(...) end end
+  -- argument handling
+  local keys = {...}
+  if type(keys[1]) == 'table' then log('got table of keys'); keys = keys[1] end
+  for i,k in ipairs(keys) do
+    if type(k) == 'string' then
+      keys[i] = k:upper():byte(1)
+    end
+  end
+  log('got keys', serpent.block(keys))
+
+  -- actual work
+  local list = {}
+  for i=0, AddressList.Count-1 do
+    local mr = AddressList[i]
+    log(mr.Description)
+    for j=0, mr.HotkeyCount-1 do
+      local hk = mr.Hotkey[j]
+      log('hotkey 1', serpent.block(hk.Keys))
+      local failed = false
+      for _,k in ipairs(keys) do
+        local matched = false
+        for _, k2 in ipairs(hk.Keys) do
+          if k==k2 then log('matched') matched = true; break; end
+        end
+        if not matched then log('unmatched'); failed = true; break end -- don't check the rest of the keys
+      end
+      if not failed then
+        list[#list+1] = mr
+      end
+    end
+  end
+  return list
+end
+
+-- example
+local list = findScriptsWithHotkey({'b'})
+print(('-'):rep(30)) -- logging seperator
+for _,mr in ipairs(list) do
+  print(mr.Description)
+  print('  ', serpent.block(mr.Hotkey[0].Keys))
+end
+ 
+ 
+[DISABLE]
+
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>4</ID>
+      <Description>"List Records with hotkey 'a'"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+[ENABLE]
+-- unchangd belongs in Table Script / autorun but I don't like making people
+-- get the prompt to run the lua code so... here's duplicated here.
+function findScriptsWithHotkey(...)
+  -- logging/testing functions
+  local serpent = serpent or {block=function(t)return tostring(t)end}
+  local function log(...) if(false) then print(...) end end
+  -- argument handling
+  local keys = {...}
+  if type(keys[1]) == 'table' then log('got table of keys'); keys = keys[1] end
+  for i,k in ipairs(keys) do
+    if type(k) == 'string' then
+      keys[i] = k:upper():byte(1)
+    end
+  end
+  log('got keys', serpent.block(keys))
+
+  -- actual work
+  local list = {}
+  for i=0, AddressList.Count-1 do
+    local mr = AddressList[i]
+    log(mr.Description)
+    for j=0, mr.HotkeyCount-1 do
+      local hk = mr.Hotkey[j]
+      log('hotkey 1', serpent.block(hk.Keys))
+      local failed = false
+      for _,k in ipairs(keys) do
+        local matched = false
+        for _, k2 in ipairs(hk.Keys) do
+          if k==k2 then log('matched') matched = true; break; end
+        end
+        if not matched then log('unmatched'); failed = true; break end -- don't check the rest of the keys
+      end
+      if not failed then
+        list[#list+1] = mr
+      end
+    end
+  end
+  return list
+end
+
+-- example
+local list = findScriptsWithHotkey{'a'}
+print(('-'):rep(30)) -- logging seperator
+for _,mr in ipairs(list) do
+  print(mr.Description)
+  print('  ', serpent.block(mr.Hotkey[0].Keys))
+end
+ 
+ 
+[DISABLE]
+
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>3</ID>
+      <Description>"List Records with hotkey 'b' and 'v'"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+[ENABLE]
+-- unchangd belongs in Table Script / autorun but I don't like making people
+-- get the prompt to run the lua code so... here's duplicated here.
+function findScriptsWithHotkey(...)
+  -- logging/testing functions
+  local serpent = serpent or {block=function(t)return tostring(t)end}
+  local function log(...) if(false) then print(...) end end
+  -- argument handling
+  local keys = {...}
+  if type(keys[1]) == 'table' then log('got table of keys'); keys = keys[1] end
+  for i,k in ipairs(keys) do
+    if type(k) == 'string' then
+      keys[i] = k:upper():byte(1)
+    end
+  end
+  log('got keys', serpent.block(keys))
+
+  -- actual work
+  local list = {}
+  for i=0, AddressList.Count-1 do
+    local mr = AddressList[i]
+    log(mr.Description)
+    for j=0, mr.HotkeyCount-1 do
+      local hk = mr.Hotkey[j]
+      log('hotkey 1', serpent.block(hk.Keys))
+      local failed = false
+      for _,k in ipairs(keys) do
+        local matched = false
+        for _, k2 in ipairs(hk.Keys) do
+          if k==k2 then log('matched') matched = true; break; end
+        end
+        if not matched then log('unmatched'); failed = true; break end -- don't check the rest of the keys
+      end
+      if not failed then
+        list[#list+1] = mr
+      end
+    end
+  end
+  return list
+end
+
+-- example
+local list = findScriptsWithHotkey('b','v')
+--print(('-'):rep(30)) -- logging seperator
+for _,mr in ipairs(list) do
+  print(mr.Description)
+  print('  ', serpent.block(mr.Hotkey[0].Keys))
+end
+ 
+ 
+[DISABLE]
+
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>6</ID>
+      <Description>"List Records with hotkey 'e'"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+[ENABLE]
+-- unchangd belongs in Table Script / autorun but I don't like making people
+-- get the prompt to run the lua code so... here's duplicated here.
+function findScriptsWithHotkey(...)
+  -- logging/testing functions
+  local serpent = serpent or {block=function(t)return tostring(t)end}
+  local function log(...) if(false) then print(...) end end
+  -- argument handling
+  local keys = {...}
+  if type(keys[1]) == 'table' then log('got table of keys'); keys = keys[1] end
+  for i,k in ipairs(keys) do
+    if type(k) == 'string' then
+      keys[i] = k:upper():byte(1)
+    end
+  end
+  log('got keys', serpent.block(keys))
+
+  -- actual work
+  local list = {}
+  for i=0, AddressList.Count-1 do
+    local mr = AddressList[i]
+    log(mr.Description)
+    for j=0, mr.HotkeyCount-1 do
+      local hk = mr.Hotkey[j]
+      log('hotkey 1', serpent.block(hk.Keys))
+      local failed = false
+      for _,k in ipairs(keys) do
+        local matched = false
+        for _, k2 in ipairs(hk.Keys) do
+          if k==k2 then log('matched') matched = true; break; end
+        end
+        if not matched then log('unmatched'); failed = true; break end -- don't check the rest of the keys
+      end
+      if not failed then
+        list[#list+1] = mr
+      end
+    end
+  end
+  return list
+end
+
+-- example
+local list = findScriptsWithHotkey('e')
+print(('-'):rep(30)) -- logging seperator
+for _,mr in ipairs(list) do
+  print(mr.Description)
+  print('  ', serpent.block(mr.Hotkey[0].Keys))
+end
+ 
+ 
+[DISABLE]
+
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
