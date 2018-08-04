@@ -19,12 +19,12 @@ local function getHeapList()
     tbl[addr] = size
     n = n + 1
   end
-  tbl.n = n
-  setmetatable(tbl, {__len = function(t) return t.n end})
-  return tbl
+  --tbl.n = n
+  --setmetatable(tbl, {__len = function(t) return t.n end})
+  return tbl, n
 end
 
-local list = getHeapList()
+local list,len = getHeapList()
 local a,ms = 0,0
 for addr, size in pairs(list) do
   if size > ms then ms,a = size,addr end
