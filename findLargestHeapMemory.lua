@@ -13,15 +13,13 @@ local function getHeapList()
   local hf = getHeapForm()
   local list = hf.ListView1.Items
   local tbl = {}
-  local n = 0
   for i=0,list.Count-1 do
     local addr, size = tonumber(list[i].Caption,16), tonumber(list[i].SubItems.Text)
     tbl[addr] = size
-    n = n + 1
   end
   --tbl.n = n
   --setmetatable(tbl, {__len = function(t) return t.n end})
-  return tbl, n
+  return tbl, list.Count
 end
 
 local list,len = getHeapList()
