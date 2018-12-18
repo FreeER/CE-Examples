@@ -1,0 +1,27 @@
+https://imgur.com/a/rq5cM5V
+
+DBToday at 1:35 AM
+Use a translation file and in there replace Cheat Engine with something else.
+pepeok
+2
+vosszaaToday at 2:14 AM
+@DB just to clarify, i would need to..
+1. Create \languages\se_SE (as if the new language i want to create is "SE" language, short for Something Else language)
+2. Copy "cheatengine-x86_64.po" in there and add "Something Else" in "msgstr" so now they look like this >> msgstr "Something Else" <<
+3. Run cheat engine with --LANG se_SE
+TatsumakiBOTToday at 2:14 AM
+:up:  |  vosszaa leveled up!
+
+vosszaaToday at 2:22 AM
+hmmm that didnt work
+i mean, i can change the context menu to whatever i want now but the process itself is still called "Cheat Engine"(edited)
+unlike the HxD method
+DBToday at 2:33 AM
+Execute the lua code getApplication().Title="Fuckwuck"  (place it in autorun)(edited)
+vosszaaToday at 2:38 AM
+that works
+i also figured that if i change ""mainunit2.cename" and "tabout.groupbox1.caption"(edited)
+and the result is the same as the fuckwuck method(edited)
+but there is a problem
+
+[FreeER summarizing:] with task manager in windows 10 still showing Cheat Engine for the main process, DB states that it works on windows 7 but 10 "remembers it". Still seemed to work for the AC bypass though
