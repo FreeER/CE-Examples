@@ -1,7 +1,30 @@
+-- img paths, imgs not included
+local bottomimg = 'autorun/cheat3.png'
+local sideimg = 'autorun/logo2.png'
+local iconimg = 'autorun/logo2.png'
+
+--[[ application icon ]]
+local ico = createPicture()
+ico.loadFromFile(iconimg)
+MainForm.Icon = ico.Icon
+
+--[[ bottom between advanced options and table extras ]]
+img = createImage(MainForm.Panel4)
+img.Align = alClient
+img.Stretch = true
+-- default to CE logo in case path doesn't exist it still shows something
+img.Picture.assign(MainForm.Logo.Picture)
+img.Picture.Height = MainForm.Panel4.Height
+img.Picture.Width = MainForm.Panel4.Width
+--load from file on your computer
+img.loadImageFromFile(bottomimg)
+
+--[[ right near add address manually button ]]
 local panel = MainForm.Panel5
 img = createImage(panel)
+-- default to CE logo in case path doesn't exist it still shows something
 img.Picture.assign(MainForm.Logo.Picture)
---img.loadImageFromFile("autorun\\logo2.png")
+img.loadImageFromFile(sideimg)
 img.Align   = alNone
 img.Stretch = true
 img.Anchors = '[akRight,akBottom]'
@@ -23,3 +46,4 @@ t.OnTimer  = function(t)
   img.Width   = width
   t.destroy() -- and done
 end
+
