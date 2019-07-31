@@ -7,7 +7,7 @@ local function getMemory(procname)
   local list = {}
   local factorTable = {M=1024*1024,K=1024,G=1024*1024*1024,B=1}
   for info in res:gmatch('[^\n]+') do
-    local pid, mem = info:match('.+%s(%d+)%s+.+%s+%d+%s+(.+)')
+    local pid, mem = info:match('%S+%s+(%d+)%s+%S+%s+%d+%s+(.+)')
     local pid = tonumber(pid)
     local mfactor = factorTable[mem:sub(-1)] or 1
     local num = mem:sub(1,-2):gsub(',', '')
