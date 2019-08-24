@@ -29,3 +29,5 @@ local function findmax(list)
 end
 
 openProcess(findmax(getMemory('chrome.exe')))
+
+showMessage('Corroder has created a proper extension for this see: https://forum.cheatengine.org/viewtopic.php?t=610647')
