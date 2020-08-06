@@ -14,6 +14,7 @@ exampleFlag:
   dd 0 // make sure it starts off when this script is toggled, since it's globalalloc
 
 {$lua}
+local timerName = 'SomeUniqueNamePerScript'
 if syntaxcheck then return end
 
 local c = memrec.Child[0]
@@ -32,12 +33,13 @@ local function onEnable() c.Active = true end
 
 if safeToEnable() then onEnable()
 else -- wait
-  HitBoxTimer = createTimer()
-  HitBoxTimer.Interval = 3 * 1000 -- wait twenty seconds
-  HitBoxTimer.OnTimer = function(t)
+  _G[timerName] = createTimer()
+  local t = _G[timerName]
+  t.Interval = 3 * 1000 -- wait twenty seconds
+  t.OnTimer = function(t)
     if safeToEnable() then -- success
-      HitBoxTimer.destroy()
-      HitBoxTimer = nil
+      t.destroy()
+      _G[timerName] = nil
       onEnable()
     else --reinit and wait to see if it can be found later
      -- if you're waiting on some dot net / mono symbol to exist
@@ -47,15 +49,15 @@ else -- wait
 end
 
 [DISABLE]
-if HitBoxTimer then HitBoxTimer.destroy() HitBoxTimer = nil end
+if _G[timerName] then _G[timerName].destroy() _G[timerName] = nil end
 c.Active = false
 </AssemblerScript>
       <CheatEntries>
         <CheatEntry>
           <ID>2</ID>
-          <Description>"Waiting..."</Description>
-          <LastState/>
-          <Color>FF0000</Color>
+          <Description>"Enabled"</Description>
+          <LastState Activated="1"/>
+          <Color>00FF00</Color>
           <VariableType>Auto Assembler Script</VariableType>
           <AssemblerScript>{$lua}
 if syntaxcheck then return end
@@ -80,7 +82,7 @@ memrec.Description = 'Off'
           <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:Off
 1:On
 </DropDownList>
-          <LastState Value="0" RealAddress="01730000"/>
+          <LastState Value="1" RealAddress="07D10000"/>
           <VariableType>4 Bytes</VariableType>
           <Address>exampleFlag</Address>
         </CheatEntry>
@@ -90,7 +92,7 @@ memrec.Description = 'Off'
   <UserdefinedSymbols>
     <SymbolEntry>
       <Name>exampleFlag</Name>
-      <Address>01730000</Address>
+      <Address>07D10000</Address>
     </SymbolEntry>
   </UserdefinedSymbols>
 </CheatTable>
