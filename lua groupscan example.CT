@@ -9,7 +9,10 @@
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>[ENABLE]
 {$lua}
--- allocateSharedMemory seems to be broken in 7.1...
+-- ok so allocateSharedMemory doesn't do what I'd initially thought eg. globalalloc
+-- it allocates memory shared across processes and maps it to an address in the target
+-- which will be a different address each time, unless you do the trick below v
+-- but in this case we don't need it shared across processes so just using allocateMemory
 my_allocateSharedMemory = function(name,size)
   if not readBytes(process) then
     if not syntaxcheck then print('Attach to a process!') end
@@ -105,7 +108,10 @@ end
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>[ENABLE]
 {$lua}
--- allocateSharedMemory seems to be broken in 7.1...
+-- ok so allocateSharedMemory doesn't do what I'd initially thought eg. globalalloc
+-- it allocates memory shared across processes and maps it to an address in the target
+-- which will be a different address each time, unless you do the trick below v
+-- but in this case we don't need it shared across processes so just using allocateMemory
 my_allocateSharedMemory = function(name,size)
   if not readBytes(process) then
     if not syntaxcheck then print('Attach to a process!') end
