@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="34">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"Cycle Images For Open Process Icon"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+[ENABLE]
+local low, high = math.huge, -1
+for i=0,MainForm.ComponentCount-1 do
+  local c = MainForm.Component[i]
+  if c.ImageIndex and c.ImageIndex ~= -1 then -- guessing -1 is default since it was a common result
+    if c.ImageIndex &lt; low then low = c.ImageIndex elseif c.ImageIndex &gt; high then high = c.ImageIndex end
+    --print(("%s : %s : %d"):format(c.Name, c.getClassName(), c.ImageIndex))
+  end
+end
+--print("Lowest index is %d highest is %d", low, high)
+
+t = createTimer()
+t.Interval = 300
+t.onTimer = function()
+  local id = MainForm.sbOpenProcess.ImageIndex
+  id = id + 1
+  if id &gt; high then id = low end
+  MainForm.sbOpenProcess.ImageIndex = id
+end
+ 
+[DISABLE]
+t.destroy()
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
