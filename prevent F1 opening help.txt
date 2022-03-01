@@ -1,2 +1,5 @@
 run the lua code:
+MainForm.HelpContext = 0
+
+update: original, below, does not seem to work as of Feb 28 2022, according to someone in discord, the above did 
 cheatEngineIs64Bit() and writeBytesLocal('HtmlHelpA', 0xC3) or writeBytesLocal('HtmlHelpA', 0xC2, 0x10, 0x00)
