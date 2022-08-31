@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <Forms>
+    <CETrainer Class="TTrainerForm" Encoding="Ascii85">osvy%,b_G=87Vep$#EAo3Urqf1g)34,Ny.Fh,^Pp,GR18D2p(nsw54@2k5Sc$f0[LE)]Ps*sHP)iL$9S*MzxEZ^C{=:Lm)q[pTp=5-2Cq6LQ@ir}ByqmL%Hz*$d+tx:gkC1DT:7OnTP(N?JaxzY%sJ)@T.8v8eAdO1Q2_oGPv;:G/jM5p0*7o^UzOFBC1V!GlZ$ktBq;c=pphK]OR4JOs6xfW)(4W448zLW9tq]cf//Q7X=2j=n[-]!^1Ar9uWYCdC9-uHae/hCB0Z4+2;;ws@rkP[pV-4sCqg(uk2fk(R)Bu?RdycrYJd*x[pc,X]VZmobqBLdYt;fD;lz(lh2yFt?fH9ojk+QFN%H.XVrVjuC7vR6zNXk-nGTeC4Jf1EO)%d;7n(bFatu!8Ek1lwd.QUc_gjlqw2N]E{p$Z=BB+U]?Igu2_FPG61eFXF+l$Qyrz*PO;i]DJ%{^K5u_gy}8.9^z+cj9dE/fJ/0M[)3b6k%rz}3w2msBwW##rC6#I!TlMh_]qX/@U*Wf}T)XlbG}!Mr1(-K,L9{W;I}8;K#_gFZ9C{nSp)Yb+@^n%ZaMbk6nNMeJc6FkhEN*o!:fo.2ByvqTuv3=Cl6mxj#Q$v)DxQA</CETrainer>
+  </Forms>
+  <CheatEntries>
+    <CheatEntry>
+      <ID>2</ID>
+      <Description>"Use Tutorial-i386.exe - Step 3, pointers are for tutorial 3.4 / CE 6.7"</Description>
+      <LastState Value="" RealAddress="00000000"/>
+      <GroupHeader>1</GroupHeader>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>7</ID>
+      <Description>"Enemy 1"</Description>
+      <LastState Value="2700" RealAddress="019D3704"/>
+      <VariableType>Float</VariableType>
+      <Address>"Tutorial-i386.exe"+1FD600</Address>
+      <Offsets>
+        <Offset>494</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>8</ID>
+      <Description>"Enemy 2"</Description>
+      <LastState Value="35" RealAddress="019D3708"/>
+      <VariableType>Double</VariableType>
+      <Address>"Tutorial-i386.exe"+1FD600</Address>
+      <Offsets>
+        <Offset>498</Offset>
+      </Offsets>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <Comments>http://forum.cheatengine.org/viewtopic.php?p=5735582#5735582
+</Comments>
+  <LuaScript>--http://forum.cheatengine.org/viewtopic.php?p=5735582#5735582
+function CustomProgressBar(pb, value, min, max)
+  value = tonumber(value) -- make sure it's a number before doing math
+  if not value then return end
+  -- custom functions used
+  local function clamp(value,min,max) return math.max(math.min(value,max),min) end
+  local function lerp(a,b,t) return math.floor(a+(b-a)*t) end
+  local function lerpRGB(r,g,b,r2,g2,b2, t)
+    return lerp(r,r2,t), lerp(g,g2,t), lerp(b,b2,t)
+  end
+  local function makeColor(r,g,b) return r | (g&lt;&lt;8) | (b&lt;&lt;16) end
+  local function ColorLuminance(r,g,b, lum) -- https://www.sitepoint.com/javascript-generate-lighter-darker-color/
+    local function applyLum(c,l) return math.round(math.min(math.max(0, c + (c * l)), 255)) end
+    return applyLum(r,lum), applyLum(g,lum), applyLum(b,lum)
+  end
+
+  -- if outside expected range color math will do unexpected things :)
+  local originalValue = value -- save value for string display at end
+  value = clamp(value,min,max)
+
+  -- fill background with some color
+  pb.Canvas.Brush.Color = pb.Parent.Color
+  pb.Canvas.clear()
+
+  -- determine percent to fill
+  local percent = (value-min) / (max-min)
+
+  -- set bar color via lerping ("linear interpolation")
+  -- simple red to green doesn't look good ~50% so use yellow to green and red to yellow
+  -- https://answers.unity.com/questions/646272/lerp-between-3-colors-based-on-energy-amount.html
+  if percent &gt; 0.5 then
+    pb.Canvas.Brush.Color = makeColor(lerpRGB(255,255,0, 0,255,0, (percent-0.5)*2))
+  else
+    pb.Canvas.Brush.Color = makeColor(lerpRGB(255,0,0, 255,255,0, percent*2))
+  end
+
+  local bsClear = 1 -- brush style clear
+
+  -- fill bar based on percent
+  pb.Canvas.fillRect(bs,bs,pb.Width * percent, pb.Height)
+  -- custom outline / border, gui editor doesn't seem to give many options :)
+  if pb.BorderStyle == 'bsNone' and pb.BorderWidth ~= 0 then
+    pb.Canvas.Pen.Color = 0x007F00
+    pb.Canvas.Pen.Width = pb.BorderWidth
+    pb.Canvas.Brush.Style = bsClear
+    -- draw outline, fillRect does not use pen I guess...
+    pb.Canvas.rect(0,0,pb.Width, pb.Height)
+  end
+
+  -- set text style for writing health value
+  pb.Canvas.Brush.Style = bsClear -- don't want a background here either lol
+  -- set font based on GUI editor style
+  pb.Canvas.Font.assign(pb.Font)
+
+  -- format the number so you dn't get eg 97.5648316878 lol
+  local svalue = ('HP: %1.2f'):format(originalValue)
+  local width = pb.Canvas.getTextWidth(svalue)
+  local height = pb.Canvas.getTextHeight(svalue)
+  local centerX = (pb.Width-width)/2
+  local centerY = (pb.Height-height)/2-2 -- slight adjustment for personal preference
+  -- write value centered
+  pb.Canvas.textOut(centerX, centerY, svalue)
+end
+
+function CETimer1Timer(sender)
+  local memrec = getAddressList().getMemoryRecordByDescription("Enemy 1")
+  local value = memrec.Value
+  local memrec2 = getAddressList().getMemoryRecordByDescription("Enemy 2")
+  local value2 = memrec2.Value
+  --CETrainer.CEProgressbar1.Min = 0 -- default
+  CETrainer.CEProgressbar1.Max = 4000
+  CETrainer.CEProgressbar1.Position = value
+
+  -- .OnPaint exists but does not seem to be called automatically as I'd expect.... maybe a bug?
+  -- but that's ok, if we're calling it ourselves then we can pass whatever we want
+  -- instead of having to get the values inside the drawing function itself
+  CustomProgressBar(CETrainer.CEPanel1, value, 0, 4000)
+  CustomProgressBar(CETrainer.CEPanel2, value2, 0, 100)
+end
+if not CETimer then
+  CETimer = createTimer()
+  CETimer.Interval = 200
+  CETimer.OnTimer = 'CETimer1Timer'
+end
+
+--TRAINERGENERATORSTART--
+--This is autogenerated code. Changing code in this block will
+--get erased and rewritten if you regenerate the trainer code
+
+--Uncomment the following line if this is a Cheat Table format trainer and you don't want CE to show (Tip, save as .CETRAINER alternatively)
+--hideAllCEWindows()
+
+RequiredCEVersion=6.6 -- pointers are for 6.7 but the code itself is compatible with at least 6.6
+if (getCEVersion==nil) or (getCEVersion()&lt;RequiredCEVersion) then
+  messageDialog('Please install Cheat Engine '..RequiredCEVersion, mtError, mbOK)
+  closeCE()
+end
+
+getAutoAttachList().add("Tutorial-i386.exe")
+gPlaySoundOnAction=false
+CETrainer.show()
+function AboutClick()
+  showMessage(gAboutText)
+end
+gAboutText=[[This trainer was made by Cheat Engine
+www.cheatengine.org]]
+
+function CloseClick()
+  --called by the close button onClick event, and when closing the form
+  closeCE()
+  return caFree --onClick doesn't care, but onClose would like a result
+end
+
+--TRAINERGENERATORSTOP--
+</LuaScript>
+</CheatTable>

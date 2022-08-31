@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="37">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"Cycle Images For Open Process Icon"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+--[[
+  Inspired from comments and code from CTG's discord by Retard and PeaceBeUponYou
+]]
+[ENABLE]
+t = createTimer()
+t.Interval = 300
+t.onTimer = function()
+  local low, high = 0, MainForm.mfImageList.Count
+  local id = MainForm.sbOpenProcess.ImageIndex
+  id = id + 1
+  if id &gt; high then id = low end
+  MainForm.sbOpenProcess.ImageIndex = id
+end
+ 
+[DISABLE]
+t.destroy()
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>

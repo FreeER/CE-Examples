@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"Auto Assemble script"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+[ENABLE]
+-- make demo form
+if not f then
+  f = createForm()
+  cb = createComboBox(f)
+  cb.ReadOnly = true
+  f.OnClose = function() f = nil; return caFree; end
+end
+f.show()
+
+-- get new temporary file
+temp = io.tmpfile()
+-- file = io.open('filename with ct-exe.txt')
+
+-- write a bunch of "options" to it, 1 per line
+-- a,b,c,d etc.
+for char in (("abcdefghijk"):upper()):gmatch('.') do
+temp:write(char,'\n')
+end
+-- make sure they're written
+temp:flush()
+
+-- go to beginning so they can be read
+temp:seek('set', 0)
+
+-- remove any existing items
+cb.Items.Clear()
+
+-- loop through lines using lines iterator
+for line in temp:lines() do
+cb.Items.add(line)
+end
+
+-- select random option
+if cb.Items.Count &gt; 1 then
+cb.ItemIndex = math.random(0, cb.Items.Count-1)
+elseif cb.Items.Count == 1 then
+cb.ItemIndex = 0
+end
+
+-- note there's also io.lines('filename.txt') which works much like
+-- :lines used above but opens and closes the file for you
+[DISABLE]
+if f then f.hide() end
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>

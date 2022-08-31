@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"setup callbacks - Make sure to use window's debugger in settings"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+-- http://forum.cheatengine.org/viewtopic.php?p=5736047#5736047
+[ENABLE]
+-- function to run when attaching to a process
+function onOpenProcess(pid)
+  print('attached to', pid)
+  -- create function to print stuff
+  local firstRun = true
+  function debugger_onModuleLoad(modulename, baseaddress)
+    if firstRun then
+      firstRun = false
+      for k,v in pairs(enumModules(pid)) do
+        print(k,v.Name, tostring(v.Is64Bit), v.PathToFile, v.Address, ('%X'):format(v.Address))
+      end
+    end
+    -- if the address &gt; 0xFFFFFFFF then CE passes light userdata object (a C pointer)... deal with that
+    if type(baseaddress) == 'userdata' then baseaddress = userDataToInteger(baseaddress) end
+    print('new module:', modulename, baseaddress, ('%X'):format(baseaddress))
+    return 0 -- 1 to break
+  end
+end
+[DISABLE]
+debugger_onModuleLoad = nil
+onOpenProess = nil
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <Comments>Info about this table:
+</Comments>
+  <DisassemblerComments>
+    <DisassemblerComment>
+      <Address>"Tutorial-x86_64.exe"+2B83D</Address>
+      <Comment>let me get a replacement str
+</Comment>
+    </DisassemblerComment>
+  </DisassemblerComments>
+</CheatTable>

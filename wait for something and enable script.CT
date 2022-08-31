@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="31">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"Wait For Thing Script"</Description>
+      <Options moHideChildren="1" moDeactivateChildrenAsWell="1"/>
+      <LastState Activated="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>// flag used in this example
+globalalloc(exampleFlag, 4)
+
+exampleFlag:
+  dd 0 // make sure it starts off when this script is toggled, since it's globalalloc
+
+{$lua}
+local timerName = 'SomeUniqueNamePerScript'
+if syntaxcheck then return end
+
+local c = memrec.Child[0]
+-- update to show waiting to enable
+c.Description = 'Waiting...'
+c.Color = 0xFF0000
+
+[ENABLE]
+-- in case it's ever more complicated, don't repeat for simple case where we can immediately enable
+-- and in the more complicated case where we have to create a timer and wait
+local function safeToEnable()
+  return readInteger("exampleFlag") == 1
+  -- in the case of mono you'd probably return getAddressSafe("some mono address")
+end
+local function onEnable() c.Active = true end
+
+if safeToEnable() then onEnable()
+else -- wait
+  _G[timerName] = createTimer()
+  local t = _G[timerName]
+  t.Interval = 3 * 1000 -- wait twenty seconds
+  t.OnTimer = function(t)
+    if safeToEnable() then -- success
+      t.destroy()
+      _G[timerName] = nil
+      onEnable()
+    else --reinit and wait to see if it can be found later
+     -- if you're waiting on some dot net / mono symbol to exist
+      reinitializeDotNetSymbolhandler()
+    end
+  end
+end
+
+[DISABLE]
+if _G[timerName] then _G[timerName].destroy() _G[timerName] = nil end
+c.Active = false
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>2</ID>
+          <Description>"Enabled"</Description>
+          <LastState Activated="1"/>
+          <Color>00FF00</Color>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>{$lua}
+if syntaxcheck then return end
+memrec.Color = 0x00FF00
+memrec.Description = 'Enabled'
+{$asm}
+
+[ENABLE]
+
+ 
+[DISABLE]
+{$lua}
+if syntaxcheck then return end
+memrec.Color = 0x000000
+memrec.Description = 'Off'
+{$asm}
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>3</ID>
+          <Description>"Set To 1 to Enable"</Description>
+          <DropDownList ReadOnly="1" DescriptionOnly="1" DisplayValueAsItem="1">0:Off
+1:On
+</DropDownList>
+          <LastState Value="1" RealAddress="07D10000"/>
+          <VariableType>4 Bytes</VariableType>
+          <Address>exampleFlag</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols>
+    <SymbolEntry>
+      <Name>exampleFlag</Name>
+      <Address>07D10000</Address>
+    </SymbolEntry>
+  </UserdefinedSymbols>
+</CheatTable>

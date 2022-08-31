@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <Forms>
+    <UDF1 Class="TCEForm" Encoding="Ascii85">,s)kh5E9@Kz#ii4;Xu*W%M$A1X2^{]npVQRpM%XKH8VY/g!uylb4Y#x@K%B*?XVBw3{y#LcIU*]lFa-)Hn4gg:bX(cyb]!-ZU]Tyn1LH.xN{Boa/*?]1viwLlwSe0XCedC9wuRsHB5F8TbN=tmLTil2uV!xFG?*+VgkCH0RR</UDF1>
+  </Forms>
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"Example Script To Toggle"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript Async="1">[ENABLE]
+AOBSCAN(test,8E 6E A2 6E 9D)
+[DISABLE]
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"Setup and Show Form"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+[ENABLE]
+-- attach to CE for the example (aob scan bytes in dbghelp.dll)
+getAutoAttachList().add(getProcessList()[getCheatEngineProcessID()])
+-- get script
+local script = getAddressList().getMemoryRecordByID(0)
+-- setup checkbox OnChange event
+UDF1.CECheckBox1.OnChange = function(sender)
+  script.Active = sender.Checked
+  if script.Async then
+    sender.state = cbGrayed
+    local t = createTimer()
+    t.Interval = 100
+    t.OnTimer = function(t)
+      if not script.AsyncProcessing then
+        t.destroy()
+        --print('setting checked', tostring(script.Active))
+        local event = sender.OnChange
+        sender.OnChange = nil
+        sender.Checked = script.Active
+        sender.OnChange = event
+      elseif script.AsyncProcessingTime &gt; 60*1000 then -- over a minute
+        t.destroy()
+        sender.Checked = false
+      end
+    end
+  elseif not script.Active then
+    sender.Checked = false -- if failed to activate keep checkbox off
+  end
+end
+
+-- set default states
+UDF1.CECheckBox1.Checked = false
+-- show
+UDF1.show()
+
+[DISABLE]
+UDF1.hide()
+
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <LuaScript>
+</LuaScript>
+</CheatTable>

@@ -1,0 +1,5 @@
+https://github.com/cheat-engine/cheat-engine/issues/345#issuecomment-396032610
+
+redownload CE(It got a minor update). Then each time you start ce hold ctrl down and click on help. Click on generate errorlogs
+
+Then next time CE crashes it 'should' generate a cedebug.log and/or a cheatengine-x86_64.exe.debug.log in the ce install dir

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>228</ID>
+      <Description>"Step 2 overlay (click and drag to move, double click or disable to close)"</Description>
+      <LastState Activated="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+[ENABLE]
+if syntaxcheck then return end
+if not process then showMessage('Make sure you attach to the tutorial!') end
+TextOverlayForm = createForm(false)
+local f = TextOverlayForm
+  -- transparency thanks to mgr.inz.Player in http://forum.cheatengine.org/viewtopic.php?t=586609
+  f.BorderStyle = 'bsNone'
+  f.Color = 0x0000FF
+  f.setLayeredAttributes(0xFF, 255, 3) -- make red transparent
+  f.FormStyle="fsSystemStayOnTop"
+local l = createLabel(f)
+  l.font.size = 80
+  l.font.color = 0xFF0000 -- example
+  l.Font.Quality = 'fqNonAntialiased'
+  l.OnMouseDown = function()
+    f.dragNow()
+  end
+  l.OnDblClick = function()
+    f.destroy()
+  end
+local t = createTimer(f)
+t.Interval = 250
+t.OnTimer = function()
+  l.Caption = readInteger('[Tutorial-i386.exe+1FD5D0]+480') -- step 2
+end
+f.show()
+
+[DISABLE]
+if syntaxcheck then return end
+TextOverlayForm.destroy()
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>229</ID>
+          <Description>"Step 2"</Description>
+          <LastState Value="100" RealAddress="01930998"/>
+          <VariableType>4 Bytes</VariableType>
+          <Address>[Tutorial-i386.exe+1FD5D0]+480</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>

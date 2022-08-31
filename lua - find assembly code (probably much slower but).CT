@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"Find uses of ?ax that involve memory"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+[ENABLE]
+local startAddress = getAddress('Tutorial-i386.exe+23B59')
+local numIns = 100
+local address = startAddress
+local ins = 0
+repeat
+  ins = ins + 1
+  local a,bytes,opcode, extra = splitDisassembledString(disassemble(address))
+  if a=="" then a = getNameFromAddress(address) end -- a (address) is "" for some reason...
+  if bytes:find('eax') and bytes:find('%[') then print(a,bytes,opcode,extra) end
+  address = address + getInstructionSize(address)
+until ins &gt; numIns
+[DISABLE]
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>

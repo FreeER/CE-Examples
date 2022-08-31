@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"Auto Assemble script"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>// based on http://www.cheatengine.org/forum/viewtopic.php?p=5694436&amp;sid=5f4d9f07c22b812dad8df46b75dee0c9#5694436
+// result https://i.imgur.com/QIlRq8e.png
+[ENABLE]
+globalalloc(convert,56) // max if all are 8 bytes
+
+// using 1 byte instructions (90/nop CC/int 3) so everything is visible
+convert:
+db 90
+align 4 CC // optional filler byte instead of 0
+dwLilEndian:
+dw 9090
+align 4 CC // optional filler byte instead of 0
+dwBigEndian:
+dw 9090
+align 4 CC // optional filler byte instead of 0
+ddLilEndian:
+dd 90909090
+
+registersymbol(dwLilEndian)
+registersymbol(dwBigEndian)
+registersymbol(ddLilEndian)
+[DISABLE]
+unregistersymbol(dwLilEndian)
+unregistersymbol(dwBigEndian)
+unregistersymbol(ddLilEndian)
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>

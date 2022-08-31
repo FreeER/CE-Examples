@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="31">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>16</ID>
+      <Description>"Scan - Single Result (hardcoded offsets)"</Description>
+      <Options moHideChildren="1"/>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$lua}
+-- ok so allocateSharedMemory doesn't do what I'd initially thought eg. globalalloc
+-- it allocates memory shared across processes and maps it to an address in the target
+-- which will be a different address each time, unless you do the trick below v
+-- but in this case we don't need it shared across processes so just using allocateMemory
+my_allocateSharedMemory = function(name,size)
+  if not readBytes(process) then
+    if not syntaxcheck then print('Attach to a process!') end
+    error('Attach to a process!',2)
+  end
+  local addr = getAddressSafe(name)
+  if addr then return addr end
+  addr = allocateMemory(size or 4096)
+  if addr and addr ~= 0 then registerSymbol(name, addr) end
+  return addr
+end
+local address = my_allocateSharedMemory('TestingGroupScan', 0x30)
+writeInteger(address,5000)
+writeInteger(address+4*3, 9000)
+writeInteger(address+4*4, 9000)
+writeInteger(address+4*8, 3000)
+writeInteger(address+4*10, 10000)
+
+writeInteger(address,5000)
+writeInteger(address+4*3, 9000)
+writeInteger(address+4*4, 9000)
+writeInteger(address+4*8, 3000)
+writeInteger(address+4*10, 10000)
+local function group_scan(group)
+  local ms=createMemScan()
+  ms.OnlyOneResult=true
+  ms.FirstScan(soExactValue, vtGrouped, rtRounded, group, "",
+  0, targetIs64Bit() and 0x00007fffffffffff or 0x00000000ffffffff, -- start stop addresses
+  --address, address+0x30, -- faster testing
+  "", fsmNotAligned,"1", false, false, false, false)
+  ms.waitTillDone()
+  local res = ms.Result
+  ms.destroy()
+  return res
+end
+
+local function specific_scan(a,b,c,d)
+  return group_scan(('4p:%d 4:* 4:* 4:%d 4:%d 4:* 4:* 4:* 4p:%d 4:* 4:%d'):format(a,b,b,c,d))
+end
+
+local function named_scan(values)
+  -- interp from http://lua-users.org/wiki/StringInterpolation
+  function interp(s, tab)
+    return (s:gsub('($%b{})', function(w) return tab[w:sub(3, -2)] or w end))
+  end
+  return group_scan(interp('4p:${a} 4:* 4:* 4:${b} 4:${b} 4:* 4:* 4:* 4p:${c} 4:* 4:${d}',values))
+end
+
+if not syntaxcheck then
+  --local result = specific_scan(5000,9000,3000,10000) -- commented to avoid two scans
+  local result = named_scan({a=5000,b=9000,c=3000,d=10000}) -- alternative example
+  if not result then error('not found') end
+  -- unfortunately the scan seems to only return the first address even with a FoundList...
+  local a_offset = 0x00
+  local c_offset = 0x20
+  memrec.Child[0].Address = result+a_offset
+  memrec.Child[0].Active = true
+  memrec.Child[0].Value = 500000
+  memrec.Child[1].Address = result+c_offset
+  memrec.Child[1].Active = true
+  memrec.Child[1].Value = 500000
+end
+
+[DISABLE]
+{$lua}
+if not syntaxcheck then
+  memrec.Child[0].Active = false
+  memrec.Child[0].Value = 5000
+  memrec.Child[1].Active = false
+  memrec.Child[1].Value = 3000
+end
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>17</ID>
+          <Description>"a"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>07D00000</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>18</ID>
+          <Description>"b"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>07D00020</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>19</ID>
+      <Description>"Scan - Foundlist"</Description>
+      <Options moHideChildren="1"/>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$lua}
+-- ok so allocateSharedMemory doesn't do what I'd initially thought eg. globalalloc
+-- it allocates memory shared across processes and maps it to an address in the target
+-- which will be a different address each time, unless you do the trick below v
+-- but in this case we don't need it shared across processes so just using allocateMemory
+my_allocateSharedMemory = function(name,size)
+  if not readBytes(process) then
+    if not syntaxcheck then print('Attach to a process!') end
+    error('Attach to a process!',2)
+  end
+  local addr = getAddressSafe(name)
+  if addr then return addr end
+  addr = allocateMemory(size or 4096)
+  if addr and addr ~= 0 then registerSymbol(name, addr) end
+  return addr
+end
+local address = my_allocateSharedMemory('TestingGroupScan2', 0x30)
+writeInteger(address,6000)
+writeInteger(address+4*3, 9000)
+writeInteger(address+4*4, 9000)
+writeInteger(address+4*8, 3000)
+writeInteger(address+4*10, 10000)
+
+local function group_scan(group)
+  local ms=createMemScan()
+  ms.FirstScan(soExactValue, vtGrouped, rtRounded, group, "",
+  0, targetIs64Bit() and 0x00007fffffffffff or 0x00000000ffffffff, -- start stop addresses
+  --address, address+0x30, -- faster testing
+  "", fsmNotAligned,"1", false, false, false, false)
+  ms.waitTillDone()
+  local fl = createFoundList(ms)
+  fl.initialize()
+  ms.destroy()
+  return fl
+end
+
+local function specific_scan(a,b,c,d)
+  return group_scan(('4p:%d 4:* 4:* 4:%d 4:%d 4:* 4:* 4:* 4p:%d 4:* 4:%d'):format(a,b,b,c,d))
+end
+
+local function named_scan(values)
+  -- interp from http://lua-users.org/wiki/StringInterpolation
+  function interp(s, tab)
+    return (s:gsub('($%b{})', function(w) return tab[w:sub(3, -2)] or w end))
+  end
+  return group_scan(interp('4p:${a} 4:* 4:* 4:${b} 4:${b} 4:* 4:* 4:* 4p:${c} 4:* 4:${d}',values))
+end
+
+if not syntaxcheck then
+  --local result = specific_scan(6000,9000,3000,10000) -- commented to avoid two scans
+  local result = named_scan({a=6000,b=9000,c=3000,d=10000}) -- alternative example
+  if not result then error('not found') end
+  local addr = getAddress(result.Address[i]) -- convert string to integer
+  local child = 0
+  for i=0,result.Count-1 do
+    --print(result.Value[i])
+    -- 4P[0]:6000 4[4]:* 4[8]:* 4[C]:9000 4[10]:9000 4[14]:* 4[18]:* 4[1C]:* 4P[20]:3000 4[24]:* 4[28]:10000
+    for offset in result.Value[i]:gmatch('%SP%[(%d+)%]') do -- returns offsets in value
+      if child &gt;= memrec.Count then print('More results than children!') return end
+      local off = tonumber(offset) -- Value is a string
+      local c = memrec.Child[child]
+      c.Address = addr+off -- calculate address
+      c.Active = true
+      c.Value = 500000
+      child = child + 1 -- move to next child index
+    end
+  end
+end
+
+[DISABLE]
+{$lua}
+if not syntaxcheck then
+  memrec.Child[0].Active = false
+  memrec.Child[0].Value = 6000
+  memrec.Child[1].Active = false
+  memrec.Child[1].Value = 3000
+end
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>20</ID>
+          <Description>"a"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>07DA0000</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>21</ID>
+          <Description>"b"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>07DA0014</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>22</ID>
+      <Description>"allocateSharedMemory Test"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+-- allocateSharedMemory seems to be broken in 7.1...
+my_allocateSharedMemory = function(name,size)
+  local addr = getAddressSafe(name)
+  if addr then return addr end
+  addr = allocateMemory(size or 4096)
+  if addr then registerSymbol(name, addr) end
+  return addr
+end
+[ENABLE]
+print('these should all be the same!')
+for i=0, 10 do
+  local address = allocateSharedMemory('TestingGroupScan')
+  local my_address = my_allocateSharedMemory('TestingGroupScan')
+  print(tostring(address),tostring(my_address))
+end
+
+[DISABLE]
+
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols>
+    <SymbolEntry>
+      <Name>TestingGroupScan</Name>
+      <Address>7D00000</Address>
+    </SymbolEntry>
+    <SymbolEntry>
+      <Name>TestingGroupScan2</Name>
+      <Address>7DA0000</Address>
+    </SymbolEntry>
+  </UserdefinedSymbols>
+</CheatTable>
