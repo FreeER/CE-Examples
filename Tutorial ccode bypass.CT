@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="42">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>228</ID>
+      <Description>"Tutorial Bypass (ccode)"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>// attemped code by FreeER, 32bit tcc stdcall+symbol fix by DarkByte
+globalalloc(bypassScript,$1000)
+{$c}
+int __attribute__((stdcall)) GetWindowTextA(void*, char*, int) asm("GetWindowTextA");
+int __attribute__((stdcall)) GetClassNameA(void*, char*, int) asm("GetClassNameA");
+void __attribute__((stdcall)) Sleep(int) asm("Sleep");
+extern __cdecl char* strstr(char*, char*);
+void* __attribute__((stdcall)) FindWindowExA(void* hWndParent, void* hWndChildAfter, char* lpszClass, char* lpszWindow) asm("FindWindowExA");
+int __attribute__((stdcall)) EnableWindow(void* hwnd, int state) asm("EnableWindow");
+void* __attribute__((stdcall)) EnumWindows(int (__attribute__((stdcall))*)(void*,long), void*) asm("EnumWindows");
+
+#define NULL ((void*)0)
+
+static void* next = NULL; // the button
+static void* tutorial; // the window
+static int onstep; // if on a tutorial step rather than initial screen
+int __attribute__((stdcall)) WorkerProc(void* hwnd, long lParam) {
+    static char buffer[50];
+    static int length;
+    length = GetWindowTextA(hwnd, buffer, sizeof(buffer));
+    Sleep(10); // delay so progress indicator record can update
+
+    if (!length) return 1;
+
+    if (strstr(buffer, "Cheat Engine Tutorial")) {
+        tutorial = hwnd;
+        return 0;
+    }
+
+    if (strstr(buffer, "Step "))
+    {
+        // extra check with class name, not unique enough to use just it unfortunately
+        char className[512];
+        GetClassNameA(hwnd, className, 500); // smaller bcuz too lazy to look up if it takes 512, etc. (nul terminator stuff)
+        if (strstr(className, "Window") == 0) return 1;
+        onstep = 1;
+        tutorial = hwnd;
+        return 0;
+    }
+    return 1;
+}
+{$asm}
+[ENABLE]
+bypassScript:
+{$ccode}
+    while (1)
+    {
+        Sleep(1000);
+        EnumWindows(WorkerProc, NULL);
+        if(onstep)
+        {
+            next = FindWindowExA(tutorial, NULL, NULL, "Next");
+            if (next) EnableWindow(next, 1);
+        }
+    }
+{$asm}
+
+createThread(bypassScript)
+[DISABLE]
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>229</ID>
+          <Description>"Tutorial Window Handle"</Description>
+          <ShowAsHex>1</ShowAsHex>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tutorial</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>230</ID>
+          <Description>"EnumWindows - Window Title (progression indicator)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>String</VariableType>
+          <Length>100</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>buffer</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>3</ID>
+          <Description>"Next Handle"</Description>
+          <ShowAsHex>1</ShowAsHex>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>next</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>4</ID>
+          <Description>"On Tutorial Step"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>onstep</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
